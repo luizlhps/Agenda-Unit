@@ -4,17 +4,36 @@
     <p>ou<span class="ml-2 text-primary-default underline">criar sua conta</span></p>
   </div>
 
-  <form class="w-full max-w-[530px]">
+  <form [formGroup]="authForm" class="w-full max-w-[530px]">
     <div class="flex flex-col gap-2">
-      <label for="username">Username</label>
-      <input type="text" placeholder="Digite seu nome de usuário" pInputText />
+      <label for="username">Usuário</label>
+      <input
+        formControlName="login"
+        type="text"
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            authForm.get('login')?.invalid && (authForm.get('login')?.dirty || authForm.get('login')?.touched),
+        }"
+        placeholder="Digite seu nome de usuário"
+        pInputText
+      />
     </div>
     <div class="mt-8 flex flex-col gap-2">
       <label for="username">Username</label>
-      <input type="text" placeholder="Digite seu nome de usuário" pInputText />
+      <input
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            authForm.get('password')?.invalid && (authForm.get('password')?.dirty || authForm.get('password')?.touched),
+        }"
+        formControlName="password"
+        type="password"
+        autocomplete="on"
+        placeholder="Digite sua senha"
+        pInputText
+      />
     </div>
-    <p-button styleClass="mt-8 block w-full" label="Submit" />
+    <p-button type="submit" (click)="handlePrint()" styleClass="mt-8 block w-full text-white" label="Submit" />
   </form>
 
-  <small class="mt-2 underline">Esqueceu a senha ?</small>
+  <a routerLink="register" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
 </div>

@@ -18,6 +18,10 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+a {
+  cursor: pointer;
+}
+
 @layer base {
   h1 {
     @apply text-5xl font-medium;
