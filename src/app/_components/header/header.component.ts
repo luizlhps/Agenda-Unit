@@ -3,6 +3,8 @@ import { RouterOutlet } from '@angular/router';
 import { LogoSvgComponent } from '../logo/logo.component';
 import { NavComponent } from './nav/nav.component';
 import { IHeaderNavItems } from './_interfaces/header-nav-items.interface';
+import { ButtonModule } from 'primeng/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-header',
