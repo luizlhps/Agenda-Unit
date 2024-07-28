@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+
+  font-family: 'Inter', sans-serif;
+}
+
+@layer base {
+  h1 {
+    @apply text-5xl font-medium;
+  }
+  h2 {
+    @apply text-xl;
+  }
+}
