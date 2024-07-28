@@ -1,0 +1,12 @@
+<nav class="">
+  <ul class="flex gap-2">
+    <li *ngFor="let item of items" class="hover:text-primary-default">
+      <a
+        [routerLink]="item.path"
+        [routerLinkActiveOptions]="{ exact: true }"
+        routerLinkActive="text-primary-default"
+        >{{ item.label }}</a
+      >
+    </li>
+  </ul>
+</nav>
