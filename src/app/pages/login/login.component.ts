@@ -8,7 +8,7 @@ import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
-import { finalize } from 'rxjs';
+import { finalize, take, tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -27,10 +27,19 @@ export class LoginComponent {
     password: ['', [Validators.required /* Validators.minLength(8) */]],
   });
 
-  handlePrint() {
+  loading = false;
+
+  handleText() {
+    console.log('loading');
+    this.authService.test().subscribe();
+  }
+
+  handleLogin() {
     this.authForm.markAllAsTouched();
 
     if (this.authForm.valid) {
+      this.loading = true;
+
       const loginRequestDto: LoginRequestDto = {
         login: this.authForm.controls.login.value ?? '',
         password: this.authForm.controls.password.value ?? '',
@@ -39,8 +48,9 @@ export class LoginComponent {
       this.authService
         .login(loginRequestDto)
         .pipe(
+          take(1),
           finalize(() => {
-            console.log('finally logged in');
+            this.loading = false;
           })
         )
         .subscribe({

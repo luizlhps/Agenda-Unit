@@ -32,8 +32,14 @@
         pInputText
       />
     </div>
-    <p-button type="submit" (click)="handlePrint()" styleClass="mt-8 block w-full text-white" label="Submit" />
+    <p-button
+      [loading]="loading"
+      type="submit"
+      (click)="handleLogin()"
+      styleClass="mt-8 block w-full text-white"
+      label="Submit"
+    />
   </form>
 
-  <a routerLink="register" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
+  <a (click)="handleText()" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
 </div>
