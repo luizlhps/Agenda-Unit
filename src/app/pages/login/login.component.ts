@@ -1,14 +1,13 @@
 import { LoginRequestDto } from './../../auth/_dtos/login-request.dto';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, NgClass, NgIf } from '@angular/common';
-import { MessagesModule } from 'primeng/messages';
-import { MessageModule } from 'primeng/message';
+import { CommonModule, NgIf } from '@angular/common';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
-import { finalize, take, tap } from 'rxjs';
+import { finalize, take } from 'rxjs';
+import { handlerErrorBase } from '../../../shared/handler-error-base';
 
 @Component({
   selector: 'app-login',
@@ -21,17 +20,37 @@ import { finalize, take, tap } from 'rxjs';
 export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthenticationService);
+  private router = inject(Router);
+
+  loading = false;
+  errorMessage: string | null = null;
 
   protected authForm = this.formBuilder.group({
     login: ['', [Validators.required]],
     password: ['', [Validators.required /* Validators.minLength(8) */]],
   });
 
-  loading = false;
+  ngOnInit(): void {
+    this.setupFormListeners();
+  }
 
   handleText() {
     console.log('loading');
     this.authService.test().subscribe();
+  }
+
+  private setupFormListeners() {
+    this.authForm.get('login')?.valueChanges.subscribe(() => {
+      this.clearError();
+    });
+
+    this.authForm.get('password')?.valueChanges.subscribe(() => {
+      this.clearError();
+    });
+  }
+
+  private clearError() {
+    this.errorMessage = null;
   }
 
   handleLogin() {
@@ -56,9 +75,10 @@ export class LoginComponent {
         .subscribe({
           next: (response) => {
             console.log('Login success:', response);
+            this.router.navigate(['schedule']);
           },
           error: (error) => {
-            console.log(error);
+            this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro ao tentar logar';
           },
         });
     }

@@ -41,5 +41,7 @@
     />
   </form>
 
+  <small *ngIf="errorMessage" class="mt-2 text-red-600">{{ errorMessage }}</small>
+
   <a (click)="handleText()" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
 </div>
