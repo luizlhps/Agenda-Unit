@@ -2,15 +2,16 @@
   <div class="mb-16 flex flex-col items-center justify-center">
     <h1>Registrar-se</h1>
     <p>
-      ou<span [routerLink]="['/login']" class="ml-2 cursor-pointer text-primary-default underline"
-        >logar em uma conta</span
-      >
+      ou
+      <span [routerLink]="['/login']" class="ml-2 cursor-pointer text-primary-default underline">
+        logar em uma conta
+      </span>
     </p>
   </div>
 
   <form [formGroup]="registerForm" class="w-full max-w-[530px]">
     <div class="flex flex-col gap-2">
-      <label for="nome">Nome Completo</label>
+      <label for="name">Nome Completo</label>
       <input
         formControlName="name"
         type="text"
@@ -21,6 +22,13 @@
         placeholder="Digite seu nome completo"
         pInputText
       />
+      <small
+        *ngIf="
+          registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched)
+        "
+      >
+        Nome é obrigatório
+      </small>
     </div>
 
     <div class="mt-8 flex grow flex-col gap-2">
@@ -34,14 +42,21 @@
         }"
         formControlName="email"
         autocomplete="on"
-        placeholder="Digite sua senha"
+        placeholder="Digite seu email"
         pInputText
       />
+      <small
+        *ngIf="
+          registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)
+        "
+      >
+        Email é obrigatório e deve ser válido
+      </small>
     </div>
 
     <div class="flex flex-col gap-2 sm:flex-row">
       <div class="mt-8 flex flex-col gap-2">
-        <label for="Usuário">Usuário</label>
+        <label for="username">Usuário</label>
         <input
           formControlName="username"
           type="text"
@@ -53,10 +68,26 @@
           placeholder="Digite seu nome de usuário"
           pInputText
         />
+        <small
+          *ngIf="
+            registerForm.get('username')?.errors?.['required'] &&
+            (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)
+          "
+        >
+          Usuário é obrigatório
+        </small>
+        <small
+          *ngIf="
+            registerForm.get('username')?.errors?.['minlength'] &&
+            (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)
+          "
+        >
+          Usuário deve ter pelo menos 6 caracteres
+        </small>
       </div>
 
       <div class="mt-8 flex grow flex-col gap-2">
-        <label for="Celular">Celular</label>
+        <label for="phone">Celular</label>
         <p-inputMask
           styleClass="w-full"
           mask="(99) 99999-9999"
@@ -68,12 +99,28 @@
           }"
           formControlName="phone"
           type="phone"
-        />
+        ></p-inputMask>
+        <small
+          *ngIf="
+            registerForm.get('phone')?.errors?.['required'] &&
+            (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)
+          "
+        >
+          Celular é obrigatório
+        </small>
+        <small
+          *ngIf="
+            registerForm.get('phone')?.errors?.['minlength'] &&
+            (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched)
+          "
+        >
+          Celular deve ter pelo menos 11 caracteres
+        </small>
       </div>
     </div>
 
     <div class="mt-8 flex grow flex-col gap-2">
-      <label for="Senha">Senha</label>
+      <label for="password">Senha</label>
       <input
         [ngClass]="{
           'ng-invalid ng-dirty':
@@ -86,6 +133,22 @@
         placeholder="Digite sua senha"
         pInputText
       />
+      <small
+        *ngIf="
+          registerForm.get('password')?.errors?.['required'] &&
+          (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)
+        "
+      >
+        Senha é obrigatória
+      </small>
+      <small
+        *ngIf="
+          registerForm.get('password')?.errors?.['minlength'] &&
+          (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)
+        "
+      >
+        Senha deve ter pelo menos 6 caracteres
+      </small>
     </div>
 
     <p-button
@@ -94,8 +157,8 @@
       size="small"
       (click)="handleRegister()"
       styleClass="mt-8 block w-full text-white"
-      label="Submit"
-    />
+      label="Registrar"
+    ></p-button>
   </form>
 
   <small *ngIf="errorMessage" class="mt-2 text-red-600">{{ errorMessage }}</small>

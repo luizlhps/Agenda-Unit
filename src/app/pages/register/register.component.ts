@@ -40,10 +40,10 @@ export class RegisterComponent {
 
   protected registerForm = this.formBuilder.group({
     name: ['', [Validators.required]],
-    password: ['', [Validators.required /* Validators.minLength(8) */]],
-    username: ['', [Validators.required /* Validators.minLength(8) */]],
-    email: ['', [Validators.required /* Validators.minLength(8) */]],
-    phone: ['', [Validators.required /* Validators.minLength(8) */]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+    username: ['', [Validators.required, Validators.minLength(6)]],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', [Validators.required, Validators.minLength(11)]],
   });
 
   handleRegister() {
