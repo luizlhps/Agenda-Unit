@@ -1,1 +1,102 @@
-<p>rfffffffffff!</p>
+<div class="flex h-[calc(100%-3.5rem)] w-full flex-col items-center justify-center px-5 py-10">
+  <div class="mb-16 flex flex-col items-center justify-center">
+    <h1>Registrar-se</h1>
+    <p>
+      ou<span [routerLink]="['/login']" class="ml-2 cursor-pointer text-primary-default underline"
+        >logar em uma conta</span
+      >
+    </p>
+  </div>
+
+  <form [formGroup]="registerForm" class="w-full max-w-[530px]">
+    <div class="flex flex-col gap-2">
+      <label for="nome">Nome Completo</label>
+      <input
+        formControlName="name"
+        type="text"
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched),
+        }"
+        placeholder="Digite seu nome completo"
+        pInputText
+      />
+    </div>
+
+    <div class="mt-8 flex grow flex-col gap-2">
+      <label for="email">Email</label>
+      <input
+        email="true"
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            registerForm.get('email')?.invalid &&
+            (registerForm.get('email')?.dirty || registerForm.get('email')?.touched),
+        }"
+        formControlName="email"
+        autocomplete="on"
+        placeholder="Digite sua senha"
+        pInputText
+      />
+    </div>
+
+    <div class="flex flex-col gap-2 sm:flex-row">
+      <div class="mt-8 flex flex-col gap-2">
+        <label for="Usuário">Usuário</label>
+        <input
+          formControlName="username"
+          type="text"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              registerForm.get('username')?.invalid &&
+              (registerForm.get('username')?.dirty || registerForm.get('username')?.touched),
+          }"
+          placeholder="Digite seu nome de usuário"
+          pInputText
+        />
+      </div>
+
+      <div class="mt-8 flex grow flex-col gap-2">
+        <label for="Celular">Celular</label>
+        <p-inputMask
+          styleClass="w-full"
+          mask="(99) 99999-9999"
+          placeholder="(99) 99999-9999"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              registerForm.get('phone')?.invalid &&
+              (registerForm.get('phone')?.dirty || registerForm.get('phone')?.touched),
+          }"
+          formControlName="phone"
+          type="phone"
+        />
+      </div>
+    </div>
+
+    <div class="mt-8 flex grow flex-col gap-2">
+      <label for="Senha">Senha</label>
+      <input
+        [ngClass]="{
+          'ng-invalid ng-dirty':
+            registerForm.get('password')?.invalid &&
+            (registerForm.get('password')?.dirty || registerForm.get('password')?.touched),
+        }"
+        formControlName="password"
+        type="password"
+        autocomplete="on"
+        placeholder="Digite sua senha"
+        pInputText
+      />
+    </div>
+
+    <p-button
+      [loading]="loading"
+      type="submit"
+      size="small"
+      (click)="handleRegister()"
+      styleClass="mt-8 block w-full text-white"
+      label="Submit"
+    />
+  </form>
+
+  <small *ngIf="errorMessage" class="mt-2 text-red-600">{{ errorMessage }}</small>
+</div>

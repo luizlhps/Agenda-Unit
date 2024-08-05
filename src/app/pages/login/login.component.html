@@ -1,25 +1,29 @@
 <div class="flex h-[calc(100%-3.5rem)] w-full flex-col items-center justify-center px-5">
   <div class="mb-16 flex flex-col items-center justify-center">
     <h1>Logar-se</h1>
-    <p>ou<span class="ml-2 text-primary-default underline">criar sua conta</span></p>
+    <p>
+      ou<span [routerLink]="['/register']" class="ml-2 cursor-pointer text-primary-default underline"
+        >criar sua conta</span
+      >
+    </p>
   </div>
 
   <form [formGroup]="authForm" class="w-full max-w-[530px]">
     <div class="flex flex-col gap-2">
       <label for="username">Usuário</label>
       <input
-        formControlName="login"
+        formControlName="username"
         type="text"
         [ngClass]="{
           'ng-invalid ng-dirty':
-            authForm.get('login')?.invalid && (authForm.get('login')?.dirty || authForm.get('login')?.touched),
+            authForm.get('username')?.invalid && (authForm.get('username')?.dirty || authForm.get('username')?.touched),
         }"
         placeholder="Digite seu nome de usuário"
         pInputText
       />
     </div>
     <div class="mt-8 flex flex-col gap-2">
-      <label for="username">Username</label>
+      <label for="Senha">Senha</label>
       <input
         [ngClass]="{
           'ng-invalid ng-dirty':
@@ -43,5 +47,5 @@
 
   <small *ngIf="errorMessage" class="mt-2 text-red-600">{{ errorMessage }}</small>
 
-  <a (click)="handleText()" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
+  <a [routerLink]="['/register']" class="mt-2 underline"><small>Esqueceu a senha ?</small></a>
 </div>

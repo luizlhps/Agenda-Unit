@@ -26,7 +26,7 @@ export class LoginComponent {
   errorMessage: string | null = null;
 
   protected authForm = this.formBuilder.group({
-    login: ['', [Validators.required]],
+    username: ['', [Validators.required]],
     password: ['', [Validators.required /* Validators.minLength(8) */]],
   });
 
@@ -60,7 +60,7 @@ export class LoginComponent {
       this.loading = true;
 
       const loginRequestDto: LoginRequestDto = {
-        login: this.authForm.controls.login.value ?? '',
+        username: this.authForm.controls.username.value ?? '',
         password: this.authForm.controls.password.value ?? '',
       };
 
@@ -74,7 +74,6 @@ export class LoginComponent {
         )
         .subscribe({
           next: (response) => {
-            console.log('Login success:', response);
             this.router.navigate(['schedule']);
           },
           error: (error) => {
