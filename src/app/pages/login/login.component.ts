@@ -31,6 +31,10 @@ export class LoginComponent {
   });
 
   ngOnInit(): void {
+    if (this.authService.haveToken()) {
+      this.router.navigate(['schedule']);
+    }
+
     this.setupFormListeners();
   }
 

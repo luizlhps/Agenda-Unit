@@ -42,4 +42,10 @@ export class AuthenticationService {
   isAuthenticated(): Observable<boolean> {
     return this.userToken.asObservable().pipe(map((user) => user !== null));
   }
+
+  haveToken(): boolean {
+    const authToken = localStorage.getItem('token');
+
+    return !!authToken
+  }
 }

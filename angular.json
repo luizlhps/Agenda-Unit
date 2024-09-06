@@ -29,7 +29,7 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss", "node_modules/primeng/resources/primeng.min.css"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           },
           "configurations": {
