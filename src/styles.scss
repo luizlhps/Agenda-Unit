@@ -29,4 +29,15 @@ a {
   h2 {
     @apply text-xl;
   }
+  p {
+    @apply text-sm;
+  }
+
+  label {
+    @apply text-sm;
+  }
+
+  a {
+    @apply text-sm;
+  }
 }

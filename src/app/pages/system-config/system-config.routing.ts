@@ -2,8 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth/_guards/auth.guard';
 import { CompanyComponent } from './company/company.component';
 import { SystemConfigComponent } from './system-config.component';
-import { ServiceComponent } from './service/service.component';
-import { CustomerComponent } from './customer/customer.component';
+import { ScheduleComponent } from '../schedule/schedule.component';
 
 export const SystemConfigRouting: Routes = [
   {
@@ -16,11 +15,7 @@ export const SystemConfigRouting: Routes = [
     component: CompanyComponent,
   },
   {
-    path: 'service',
-    component: ServiceComponent,
-  },
-  {
-    path: 'customer',
-    component: CustomerComponent,
+    path: 'schedule',
+    component: ScheduleComponent,
   },
 ];

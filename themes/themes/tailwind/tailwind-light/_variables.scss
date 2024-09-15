@@ -52,7 +52,7 @@ $fontFamily:
   'Segoe UI Emoji',
   'Segoe UI Symbol',
   'Noto Color Emoji' !default;
-$fontSize: 1rem !default;
+$fontSize: 0.875rem !default;
 $fontWeight: normal !default;
 $textColor: $shade700 !default;
 $textSecondaryColor: $shade600 !default;
@@ -61,7 +61,7 @@ $transitionDuration: 0.2s !default;
 $formElementTransition: none !default;
 $actionIconTransition: none !default;
 $listItemTransition: none !default;
-$primeIconFontSize: 1rem !default;
+$primeIconFontSize: 0.875rem !default;
 $divider: 1px solid #f3f4f6 !default; //coolgray-100
 $inlineSpacing: 0.5rem !default;
 $disabledOpacity: 0.6 !default;
@@ -93,7 +93,7 @@ $actionIconBorderRadius: 50% !default;
 
 //input field (e.g. inputtext, spinner, inputmask)
 $inputPadding: 0.75rem 0.75rem !default;
-$inputTextFontSize: 1rem !default;
+$inputTextFontSize: 0.875rem !default;
 $inputBg: $shade000 !default;
 $inputTextColor: $shade700 !default;
 $inputIconColor: $shade600 !default;
@@ -584,14 +584,14 @@ $messageMargin: 1rem 0 !default;
 $messagePadding: 1.25rem 1.75rem !default;
 $messageBorderWidth: 0 0 0 6px !default;
 $messageIconFontSize: 1.5rem !default;
-$messageTextFontSize: 1rem !default;
+$messageTextFontSize: 0.875rem !default;
 $messageTextFontWeight: 500 !default;
 
 //inline message
 $inlineMessagePadding: $inputPadding !default;
 $inlineMessageMargin: 0 !default;
-$inlineMessageIconFontSize: 1rem !default;
-$inlineMessageTextFontSize: 1rem !default;
+$inlineMessageIconFontSize: 0.875rem !default;
+$inlineMessageTextFontSize: 0.875rem !default;
 $inlineMessageBorderWidth: 0px !default;
 
 //toast
