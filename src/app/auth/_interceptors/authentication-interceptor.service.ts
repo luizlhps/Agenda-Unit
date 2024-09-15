@@ -28,6 +28,7 @@ export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
         if (err.status === 401) {
+          authService.logout();
         }
 
         if (err.status === 403) {
