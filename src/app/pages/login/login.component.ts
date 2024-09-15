@@ -4,15 +4,28 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule, NgIf, NgTemplateOutlet } from '@angular/common';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
 import { finalize, take } from 'rxjs';
 import { handlerErrorBase } from '../../../shared/handler-error-base';
+import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, InputTextModule, ButtonModule, RouterLink, FormsModule, ReactiveFormsModule, NgIf],
+  imports: [
+    CommonModule,
+    InputTextModule,
+    ButtonModule,
+    RouterLink,
+    FormsModule,
+    ReactiveFormsModule,
+    NgIf,
+    NgTemplateOutlet,
+    AnimateOnScrollModule,
+    ProgressSpinnerModule,
+  ],
 
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',

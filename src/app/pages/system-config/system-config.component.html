@@ -1,0 +1,28 @@
+<div class="gradient-animation flex h-full w-full flex-col items-center justify-center px-5 py-10">
+  <logo-svg class="mb-8 w-[170px]" />
+
+  <h1
+    class="inline-block max-w-[740px] bg-gradient-to-br from-primary-default from-80% to-primary-dark bg-clip-text text-center text-primary-default text-transparent"
+  >
+    Olá <span class="capitalize">{{ this.username }}</span
+    >, Vamos configurar seu sistema?
+  </h1>
+
+  <p class="mt-5 max-w-[740px] text-center text-gray-500">
+    Estamos felizes por começar suas agenda com a agendaUnit. Vamos configurar a sua conta para iniciarmos os seus
+    agendamentos
+  </p>
+
+  <p-button
+    [loading]="loading"
+    type="submit"
+    size="small"
+    class="w-full max-w-[450px]"
+    styleClass="mt-8 block w-full text-white"
+    label="Começar agendamento"
+    [routerLink]="['company']"
+  ></p-button>
+  <a [routerLink]="['/']" class="mt-2 text-gray-500 underline"
+    ><small class="text-sm">Quero configurar depois</small></a
+  >
+</div>

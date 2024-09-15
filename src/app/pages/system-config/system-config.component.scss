@@ -1,0 +1,13 @@
+.gradient-animation {
+  animation: gradientReveal 2s ease forwards;
+  opacity: 0;
+}
+
+@keyframes gradientReveal {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

@@ -6,12 +6,14 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
 import { AuthUser } from '../_dtos/auth-user.dto';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
   private httpClient = inject(HttpClient);
+  private router = inject(Router);
   userToken = new BehaviorSubject<AuthUser | null>(null);
 
   constructor() {}
@@ -24,8 +26,6 @@ export class AuthenticationService {
         //decode the token
         const decodedToken = jwtDecode<AuthUser>(res.token);
         this.userToken.next(decodedToken);
-
-        console.log(this.userToken);
       })
     );
   }
@@ -37,6 +37,17 @@ export class AuthenticationService {
   logout(): void {
     localStorage.removeItem('token');
     this.userToken.next(null);
+
+    this.router.navigate(['/login']);
+  }
+
+  autoLogin(): void {
+    const authToken = localStorage.getItem('token');
+
+    if (authToken) {
+      const decodedToken = jwtDecode<AuthUser>(authToken);
+      this.userToken.next(decodedToken);
+    }
   }
 
   isAuthenticated(): Observable<boolean> {
@@ -46,6 +57,6 @@ export class AuthenticationService {
   haveToken(): boolean {
     const authToken = localStorage.getItem('token');
 
-    return !!authToken
+    return !!authToken;
   }
 }

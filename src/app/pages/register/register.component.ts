@@ -10,9 +10,8 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { UserCreateDto } from '../../_dtos/user-create.dto';
-import * as bcrypt from 'bcryptjs';
 import { catchError, finalize, of, switchMap } from 'rxjs';
-
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 @Component({
   selector: 'app-register',
   standalone: true,
@@ -25,6 +24,7 @@ import { catchError, finalize, of, switchMap } from 'rxjs';
     ReactiveFormsModule,
     NgIf,
     InputMaskModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -62,42 +62,33 @@ export class RegisterComponent {
         username: this.registerForm.controls.username.value ?? '',
       };
 
-      const saltRounds = 10;
+      userCreatedDto.phone = userCreatedDto.phone.replace(/\D/g, '');
 
-      bcrypt.hash(userCreatedDto.password, saltRounds, (err, hash) => {
-        if (err) {
-          this.loading = false;
-        } else {
-          userCreatedDto.password = hash;
-          userCreatedDto.phone = userCreatedDto.phone.replace(/\D/g, '');
-
-          this.userService
-            .register(userCreatedDto)
-            .pipe(
-              finalize(() => {
-                this.loading = false;
-              }),
-              switchMap((response) =>
-                this.authenticationService.login({
-                  username: userCreatedDto.username,
-                  password: userCreatedDto.password,
-                })
-              ),
-              catchError((error) => {
-                this.errorMessage = error.error.message;
-                console.log(error);
-                return of(null); // Continue the observable chain with a null value
-              })
-            )
-            .subscribe((loginResponse) => {
-              if (loginResponse) {
-                this.router.navigate(['schedule']);
-              } else {
-                this.errorMessage = 'Falha ao efetuar login';
-              }
-            });
-        }
-      });
+      this.userService
+        .register(userCreatedDto)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+          }),
+          switchMap((response) =>
+            this.authenticationService.login({
+              username: userCreatedDto.username,
+              password: userCreatedDto.password,
+            })
+          ),
+          catchError((error) => {
+            this.errorMessage = error.error.message;
+            console.log(error);
+            return of(null); // Continue the observable chain with a null value
+          })
+        )
+        .subscribe((loginResponse) => {
+          if (loginResponse) {
+            this.router.navigate(['schedule']);
+          } else {
+            this.errorMessage = 'Falha ao efetuar login';
+          }
+        });
     }
   }
 }

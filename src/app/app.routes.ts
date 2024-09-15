@@ -3,6 +3,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { HeaderComponent } from './_components/header/header.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ScheduleComponent } from './pages/schedule/schedule.component';
+import { AuthGuard } from './auth/_guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,8 +20,16 @@ export const routes: Routes = [
       },
     ],
   },
+
+  {
+    canActivate: [AuthGuard],
+    path: 'system-config',
+    loadChildren: () => import('./pages/system-config/system-config.routing').then((m) => m.SystemConfigRouting),
+  },
+
   {
     path: 'schedule',
     component: ScheduleComponent,
+    canActivate: [AuthGuard],
   },
 ];
