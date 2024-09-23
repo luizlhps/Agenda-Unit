@@ -2,7 +2,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from '../../auth/_guards/auth.guard';
 import { CompanyComponent } from './company/company.component';
 import { SystemConfigComponent } from './system-config.component';
-import { ScheduleComponent } from '../schedule/schedule.component';
+import { SchedulingComponent } from './system-config-scheduling/scheduling.component';
 
 export const SystemConfigRouting: Routes = [
   {
@@ -15,7 +15,7 @@ export const SystemConfigRouting: Routes = [
     component: CompanyComponent,
   },
   {
-    path: 'schedule',
-    component: ScheduleComponent,
+    path: 'scheduling',
+    component: SchedulingComponent,
   },
 ];

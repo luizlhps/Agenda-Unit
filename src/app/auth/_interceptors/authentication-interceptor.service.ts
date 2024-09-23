@@ -40,15 +40,12 @@ export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
                 if (!window.location.href.includes('system-config/company')) {
                   router.navigate(['system-config']);
                 }
-
                 break;
 
-              case SystemConfigurationStepEnum.CustomerNotCreated:
-                router.navigate(['system-config/schedule?step=customer']);
-                break;
-
-              case SystemConfigurationStepEnum.ServiceNotCreated:
-                router.navigate(['system-config/schedule?step=service']);
+              case SystemConfigurationStepEnum.SchedulingNotCreated:
+                router.navigate(['system-config/scheduling'], {
+                  queryParams: { step: errSystem.etapa },
+                });
                 break;
 
               default:

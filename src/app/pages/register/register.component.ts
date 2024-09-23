@@ -84,7 +84,7 @@ export class RegisterComponent {
         )
         .subscribe((loginResponse) => {
           if (loginResponse) {
-            this.router.navigate(['schedule']);
+            this.router.navigate(['scheduling']);
           } else {
             this.errorMessage = 'Falha ao efetuar login';
           }
