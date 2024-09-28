@@ -1,5 +1,5 @@
 <p-dialog #dialog [modal]="true" [(visible)]="modalServiceVisible">
-  <new-service></new-service>
+  <new-service [form]="serviceForm"></new-service>
 </p-dialog>
 
 <div class="flex min-h-full w-full flex-col items-center justify-center px-5 py-10">
@@ -35,7 +35,6 @@
       <div class="col-span-2 flex flex-col gap-2">
         <select-form
           label="Serviços"
-          #dropDownThing
           class="grow-[2]"
           [options]="services"
           [control]="form.controls.service"

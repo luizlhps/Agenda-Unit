@@ -20,7 +20,7 @@
           class="text-red-500"
           *ngIf="form.get('name')?.invalid && (form.get('name')?.dirty || form.get('name')?.touched)"
         >
-          Nome da empresa é obrigatório
+          Nome do serviço é obrigatório
         </small>
       </div>
 
@@ -52,21 +52,23 @@
 
       <div class="col-span-2 flex flex-col gap-2">
         <label for="Valor">Valor</label>
-        <input
+        <p-inputNumber
+          styleClass="w-full"
+          [minFractionDigits]="2"
           formControlName="value"
-          type="text"
           [ngClass]="{
             'ng-invalid ng-dirty':
               form.get('value')?.invalid && (form.get('value')?.dirty || form.get('value')?.touched),
           }"
           placeholder="Digite o valor"
-          pInputText
+          mode="currency"
+          currency="BRL"
         />
         <small
           class="text-red-500"
           *ngIf="form.get('value')?.invalid && (form.get('value')?.dirty || form.get('value')?.touched)"
         >
-          Nome da empresa é obrigatório
+          Valor é obrigatório
         </small>
       </div>
     </div>

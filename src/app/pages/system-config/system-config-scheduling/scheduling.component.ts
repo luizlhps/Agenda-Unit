@@ -66,7 +66,6 @@ export class SchedulingComponent implements OnInit, OnDestroy {
   private systemConfigManagerService = inject(SystemConfigManagerService);
   private sub: Subscription = new Subscription();
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
-  private breakpointObserver = inject(BreakpointObserver);
 
   hours: TimeOption[] = [];
   minutes: TimeOption[] = [];
@@ -86,6 +85,13 @@ export class SchedulingComponent implements OnInit, OnDestroy {
     hours: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
     minutes: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
     service: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
+  });
+
+  serviceForm = this.formBuilder.group({
+    name: new FormControl('', { validators: [Validators.required] }),
+    hours: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
+    minutes: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
+    value: new FormControl(null, { validators: [Validators.required] }),
   });
 
   ngOnInit() {

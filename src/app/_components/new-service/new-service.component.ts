@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, Input } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { TimeOption } from './_interfaces/time-stamp.interface';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { FormControlPipe } from '../../../shared/form-control-pipe';
 import { SelectFormComponent } from '../form/select-form/select-form.component';
 import { LogoSvgComponent } from '../logo/logo.component';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
   selector: 'new-service',
@@ -28,26 +29,26 @@ import { LogoSvgComponent } from '../logo/logo.component';
     SelectFormComponent,
     FormControlPipe,
     TooltipModule,
+    InputNumberModule,
   ],
   templateUrl: './new-service.component.html',
   styleUrl: './new-service.component.scss',
 })
 export class NewServiceComponent {
-  private formBuilder = inject(FormBuilder);
-  private sub: Subscription = new Subscription();
+  @Input() form!: FormGroup<{
+    name: FormControl<string | null>;
+    hours: FormControl<TimeOption | null>;
+    minutes: FormControl<TimeOption | null>;
+    value: FormControl<null>;
+  }>;
+
+  sub: Subscription = new Subscription();
 
   loading = false;
   errorMessage: string | null = null;
 
   hours: TimeOption[] = [];
   minutes: TimeOption[] = [];
-
-  protected form = this.formBuilder.group({
-    name: new FormControl('', { validators: [Validators.required] }),
-    hours: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
-    minutes: new FormControl<TimeOption | null>(null, { validators: [Validators.required] }),
-    value: new FormControl('', { validators: [Validators.required] }),
-  });
 
   ngOnInit() {
     //minutes
@@ -73,7 +74,38 @@ export class NewServiceComponent {
     this.sub.unsubscribe();
   }
 
-  onSubmit() {}
+  onSubmit() {
+    this.form.markAllAsTouched();
+
+    if (this.form.valid) {
+      this.loading = true;
+
+      console.log(this.form);
+
+      /*       const loginRequestDto: LoginRequestDto = {
+        username: this.authForm.controls.username.value ?? '',
+        password: this.authForm.controls.password.value ?? '',
+      };
+      this.sub.add(
+        this.authService
+          .login(loginRequestDto)
+          .pipe(
+            take(1),
+            finalize(() => {
+              this.loading = false;
+            })
+          )
+          .subscribe({
+            next: (response) => {
+              this.router.navigate(['schedule']);
+            },
+            error: (error) => {
+              this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro ao tentar logar';
+            },
+          })
+      ); */
+    }
+  }
 
   private onChangeSelectHours() {
     this.sub.add(
