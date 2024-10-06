@@ -1,19 +1,22 @@
-import { Component, inject, Input } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { finalize, Subscription, take } from 'rxjs';
 import { TimeOption } from './_interfaces/time-stamp.interface';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { FormControlPipe } from '../../../shared/form-control-pipe';
 import { SelectFormComponent } from '../form/select-form/select-form.component';
-import { LogoSvgComponent } from '../logo/logo.component';
 import { InputNumberModule } from 'primeng/inputnumber';
+import * as moment from 'moment';
+import { INewServiceApi } from './_interfaces/service.api.interface';
+import { SystemConfigManagerServiceCreatedDto } from '../../_dtos/system-config-manager-service-created.dto';
+import { SystemConfigManagerServiceCreateDto } from '../../_dtos/system-config-manager-service-create.dto';
+import { handlerErrorBase } from '../../../shared/handler-error-base';
+import { durationHoursMinutes } from '../../../shared/helpers/duration-helper';
 
 @Component({
   selector: 'new-service',
@@ -39,8 +42,12 @@ export class NewServiceComponent {
     name: FormControl<string | null>;
     hours: FormControl<TimeOption | null>;
     minutes: FormControl<TimeOption | null>;
-    value: FormControl<null>;
+    price: FormControl<number | null>;
   }>;
+
+  @Input() serviceApi!: INewServiceApi;
+
+  @Output() successHandler: EventEmitter<void> = new EventEmitter();
 
   sub: Subscription = new Subscription();
 
@@ -55,7 +62,7 @@ export class NewServiceComponent {
     for (let i = 0; i <= 55; i += 5) {
       this.minutes.push({
         name: `${String(i).padStart(2, '0')} Minutos`,
-        value: `${String(i).padStart(2, '0')} Minutes`,
+        value: i,
       });
     }
 
@@ -63,7 +70,7 @@ export class NewServiceComponent {
     for (let i = 0; i <= 24; i++) {
       this.hours.push({
         name: `${String(i).padStart(2, '0')} Horas`,
-        value: `${String(i).padStart(2, '0')} Hours`,
+        value: i,
       });
     }
 
@@ -74,21 +81,33 @@ export class NewServiceComponent {
     this.sub.unsubscribe();
   }
 
+  sumDurations(...durations: moment.Duration[]): moment.Duration {
+    return durations.reduce((total, duration) => total.add(duration), moment.duration(0));
+  }
+
   onSubmit() {
+    console.log(this.form);
+
     this.form.markAllAsTouched();
 
     if (this.form.valid) {
+      this.errorMessage = null;
       this.loading = true;
 
       console.log(this.form);
 
-      /*       const loginRequestDto: LoginRequestDto = {
-        username: this.authForm.controls.username.value ?? '',
-        password: this.authForm.controls.password.value ?? '',
+      const hours = this.form.controls.hours.value?.value as number;
+      const minutes = this.form.controls.minutes.value?.value as number;
+
+      const systemConfigManagerServiceCreateDto: SystemConfigManagerServiceCreateDto = {
+        name: this.form.controls.name.value ?? '',
+        price: this.form.controls.price.value ?? 0,
+        duration: durationHoursMinutes(hours, minutes),
       };
+
       this.sub.add(
-        this.authService
-          .login(loginRequestDto)
+        this.serviceApi
+          .createService(systemConfigManagerServiceCreateDto)
           .pipe(
             take(1),
             finalize(() => {
@@ -97,26 +116,43 @@ export class NewServiceComponent {
           )
           .subscribe({
             next: (response) => {
-              this.router.navigate(['schedule']);
+              console.log(response);
+
+              if (response.success) {
+                this.loading = false;
+                this.errorMessage = null;
+                this.form.reset();
+
+                this.successHandler.emit();
+              }
             },
             error: (error) => {
-              this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro ao tentar logar';
+              console.log('Falha ao cadastrar o serviço', error);
+
+              const errorResponse = handlerErrorBase(error);
+
+              if (errorResponse?.statusCode == 400 && errorResponse?.errorsFields) {
+                this.errorMessage = Object.values(errorResponse?.errorsFields)[0];
+                return;
+              }
+
+              this.errorMessage = errorResponse?.message ?? 'Falha ao cadastrar o serviço';
             },
           })
-      ); */
+      );
     }
   }
 
   private onChangeSelectHours() {
     this.sub.add(
       this.form.controls.hours.valueChanges.subscribe((valueChanges) => {
-        if (valueChanges?.value === '24 Hours') {
+        if (valueChanges?.value === 24) {
           this.form.controls.minutes.setValue(this.minutes[0]);
           this.form.controls.minutes.updateValueAndValidity();
           this.form.controls.minutes.disable();
         }
 
-        if (valueChanges?.value !== '24 Hours') {
+        if (valueChanges?.value !== 24) {
           this.form.controls.minutes.enable();
         }
       })

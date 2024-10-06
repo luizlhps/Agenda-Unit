@@ -1,10 +1,3 @@
-export interface SystemConfigManagerServiceCreateDto {
-  success: boolean | null;
-  service: ServiceDto;
-}
+import { ServiceCreateDto } from '../_components/new-service/_interfaces/service.api.interface';
 
-interface ServiceDto {
-  name: string;
-  duration: string;
-  price: number;
-}
+export interface SystemConfigManagerServiceCreateDto extends ServiceCreateDto {}

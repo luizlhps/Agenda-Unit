@@ -48,17 +48,17 @@
         </div>
       </div>
 
-      <!-- value -->
+      <!-- price -->
 
       <div class="col-span-2 flex flex-col gap-2">
         <label for="Valor">Valor</label>
         <p-inputNumber
           styleClass="w-full"
           [minFractionDigits]="2"
-          formControlName="value"
+          formControlName="price"
           [ngClass]="{
             'ng-invalid ng-dirty':
-              form.get('value')?.invalid && (form.get('value')?.dirty || form.get('value')?.touched),
+              form.get('price')?.invalid && (form.get('price')?.dirty || form.get('price')?.touched),
           }"
           placeholder="Digite o valor"
           mode="currency"
@@ -66,7 +66,7 @@
         />
         <small
           class="text-red-500"
-          *ngIf="form.get('value')?.invalid && (form.get('value')?.dirty || form.get('value')?.touched)"
+          *ngIf="form.get('price')?.invalid && (form.get('price')?.dirty || form.get('price')?.touched)"
         >
           Valor é obrigatório
         </small>

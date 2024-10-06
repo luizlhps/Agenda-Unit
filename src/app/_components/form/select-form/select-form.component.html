@@ -1,16 +1,18 @@
-<label for="Duração">{{ label }}</label>
+<div class="flex flex-col gap-2">
+  <label for="Duração">{{ label }}</label>
 
-<div class="flex grow flex-col">
-  <p-dropdown
-    [id]="'teste'"
-    [formControl]="control"
-    [options]="options"
-    [optionLabel]="optionLabel"
-    [placeholder]="placeholder"
-    (onChange)="onChange.emit($event.value)"
-    styleClass="w-full"
-  />
+  <div class="flex grow flex-col">
+    <p-dropdown
+      [id]="'teste'"
+      [formControl]="control"
+      [options]="options"
+      [optionLabel]="optionLabel"
+      [placeholder]="placeholder"
+      (onChange)="onChange.emit($event.value)"
+      styleClass="w-full"
+    />
+  </div>
+  <small class="text-red-500" *ngIf="control?.invalid && (control?.dirty || control?.touched)">
+    {{ validationMessage }}
+  </small>
 </div>
-<small class="text-red-500" *ngIf="control?.invalid && (control?.dirty || control?.touched)">
-  {{ validationMessage }}
-</small>

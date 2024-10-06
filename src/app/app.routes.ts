@@ -3,7 +3,7 @@ import { RegisterComponent } from './pages/register/register.component';
 import { HeaderComponent } from './_components/header/header.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './auth/_guards/auth.guard';
-import { ScheduleComponent } from './pages/schedule/schedule.component';
+import { ScheduleComponent } from './pages/scheduling/scheduling.component';
 
 export const routes: Routes = [
   {
@@ -28,7 +28,7 @@ export const routes: Routes = [
   },
 
   {
-    path: 'schedule',
+    path: 'scheduling',
     component: ScheduleComponent,
     canActivate: [AuthGuard],
   },

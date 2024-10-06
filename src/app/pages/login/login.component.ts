@@ -45,7 +45,7 @@ export class LoginComponent {
 
   ngOnInit(): void {
     if (this.authService.haveToken()) {
-      this.router.navigate(['schedule']);
+      this.router.navigate(['scheduling']);
     }
 
     this.setupFormListeners();
@@ -91,7 +91,7 @@ export class LoginComponent {
         )
         .subscribe({
           next: (response) => {
-            this.router.navigate(['schedule']);
+            this.router.navigate(['scheduling']);
           },
           error: (error) => {
             this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro ao tentar logar';

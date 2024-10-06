@@ -68,7 +68,7 @@ export class CompanyComponent {
         )
         .subscribe({
           next: (response) => {
-            this.router.navigate(['scheduling']);
+            this.router.navigate(['system-config/scheduling']);
           },
           error: (error) => {
             this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro, tente novamente mais tarde.';

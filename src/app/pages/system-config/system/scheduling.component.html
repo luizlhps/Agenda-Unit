@@ -1,0 +1,151 @@
+<p-toast />
+
+<p-dialog #dialog [modal]="true" [(visible)]="modalServiceVisible">
+  <new-service
+    (successHandler)="handlerSuccessCreatedService()"
+    [serviceApi]="systemConfigManagerService"
+    [form]="serviceForm"
+  ></new-service>
+</p-dialog>
+
+<div class="flex min-h-full w-full flex-col items-center justify-center px-5 py-10">
+  <logo-svg class="mb-8 w-[170px]" />
+  <div class="mb-10 flex flex-col items-center justify-center">
+    <h1 class="max-w-[38rem] text-center text-primary-default">Vamos Fazer sua primeira agenda</h1>
+    <h2 class="mt-4 max-w-[30rem] text-center text-base text-gray-500">
+      Agora com seu sistema configurado é possível fazermos sua primeira agenda
+    </h2>
+  </div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="scheudulingForm" class="w-full max-w-[530px]">
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Name Customer -->
+      <div class="col-span-2 flex flex-col gap-2">
+        <label for="nameCustomer">Nome do Cliente</label>
+        <input
+          formControlName="nameCustomer"
+          type="text"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              scheudulingForm.get('nameCustomer')?.invalid &&
+              (scheudulingForm.get('nameCustomer')?.dirty || scheudulingForm.get('nameCustomer')?.touched),
+          }"
+          placeholder="Digite o nome do cliente"
+          pInputText
+        />
+        <small
+          class="text-red-500"
+          *ngIf="
+            scheudulingForm.get('nameCustomer')?.invalid &&
+            (scheudulingForm.get('nameCustomer')?.dirty || scheudulingForm.get('nameCustomer')?.touched)
+          "
+        >
+          Nome da empresa é obrigatório
+        </small>
+      </div>
+
+      <!-- Email Customer -->
+      <div class="col-span-2">
+        <label for="email">Email do Cliente</label>
+        <input
+          class="w-full"
+          formControlName="email"
+          type="text"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              scheudulingForm.get('email')?.invalid &&
+              (scheudulingForm.get('email')?.dirty || scheudulingForm.get('email')?.touched),
+          }"
+          placeholder="Digite o nome do cliente"
+          pInputText
+        />
+        <small
+          class="text-red-500"
+          *ngIf="
+            scheudulingForm.get('email')?.invalid &&
+            (scheudulingForm.get('email')?.dirty || scheudulingForm.get('email')?.touched)
+          "
+        >
+          Email inválido
+        </small>
+      </div>
+
+      <!-- services -->
+      <div class="col-span-2 sm:col-span-1">
+        <select-form
+          label="Serviços"
+          [options]="services"
+          [control]="scheudulingForm.controls.service"
+          placeholder="Escolha o serviço"
+          id="services"
+        ></select-form>
+      </div>
+
+      <!-- Data agendamento -->
+      <div class="col-span-2 flex flex-col gap-2 sm:col-span-1">
+        <label for="Data do agendamento">Data do agendamento</label>
+        <p-calendar styleClass="w-full" formControlName="date" />
+      </div>
+
+      <!-- phone -->
+      <div class="col-span-2 flex flex-col gap-2 sm:col-span-1">
+        <label for="Nome">Celular de contato</label>
+        <p-inputMask
+          styleClass="w-full "
+          mask="(99) 99999-9999"
+          placeholder="(99) 99999-9999"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              scheudulingForm.get('phone')?.invalid &&
+              (scheudulingForm.get('phone')?.dirty || scheudulingForm.get('phone')?.touched),
+          }"
+          formControlName="phone"
+          type="phone"
+        ></p-inputMask>
+        <small
+          class="text-red-500"
+          *ngIf="
+            scheudulingForm.get('phone')?.invalid &&
+            (scheudulingForm.get('phone')?.dirty || scheudulingForm.get('phone')?.touched)
+          "
+        >
+          Celular é obrigatório
+        </small>
+      </div>
+
+      <!-- price -->
+      <div class="col-span-2 flex flex-col gap-2 sm:col-span-1">
+        <label for="Valor">Valor</label>
+        <p-inputNumber
+          [readonly]="true"
+          [disabled]="true"
+          styleClass="w-full"
+          [minFractionDigits]="2"
+          formControlName="totalPrice"
+          [ngClass]="{
+            'ng-invalid ng-dirty':
+              scheudulingForm.get('totalPrice')?.invalid &&
+              (scheudulingForm.get('totalPrice')?.dirty || scheudulingForm.get('totalPrice')?.touched),
+          }"
+          placeholder="Digite o valor"
+          mode="currency"
+          currency="BRL"
+        />
+        <small
+          class="text-red-500"
+          *ngIf="
+            scheudulingForm.get('totalPrice')?.invalid &&
+            (scheudulingForm.get('totalPrice')?.dirty || scheudulingForm.get('totalPrice')?.touched)
+          "
+        >
+          Crie um serviço
+        </small>
+      </div>
+    </div>
+
+    <p-button [loading]="loading" type="submit" styleClass="mt-11 block w-full " label="Prosseguir" />
+  </form>
+
+  <small *ngIf="errorMessage" class="mt-2 text-red-600">{{ errorMessage }}</small>
+
+  <a [routerLink]="['/']" class="mt-4 underline opacity-75">Quero configurar depois</a>
+</div>
