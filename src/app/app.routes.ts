@@ -7,6 +7,18 @@ import { ScheduleComponent } from './pages/scheduling/scheduling.component';
 
 export const routes: Routes = [
   {
+    canActivate: [AuthGuard],
+    path: 'system-config',
+    loadChildren: () => import('./pages/system-config/system-config.routing').then((m) => m.SystemConfigRouting),
+  },
+
+  {
+    path: 'scheduling',
+    component: ScheduleComponent,
+    canActivate: [AuthGuard],
+  },
+
+  {
     path: '',
     component: HeaderComponent,
     children: [
@@ -22,14 +34,8 @@ export const routes: Routes = [
   },
 
   {
-    canActivate: [AuthGuard],
-    path: 'system-config',
-    loadChildren: () => import('./pages/system-config/system-config.routing').then((m) => m.SystemConfigRouting),
-  },
-
-  {
-    path: 'scheduling',
-    component: ScheduleComponent,
-    canActivate: [AuthGuard],
+    path: '**',
+    redirectTo: '',
+    pathMatch: 'full',
   },
 ];

@@ -16,8 +16,6 @@ export class NavComponent {
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
   closeCallback(e: any): void {
-    console.log('text');
-
     this.sidebarRef.close(e);
   }
 

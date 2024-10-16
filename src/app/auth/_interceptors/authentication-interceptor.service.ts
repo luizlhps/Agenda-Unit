@@ -1,8 +1,15 @@
 // authentication.interceptor.ts
 import { inject } from '@angular/core';
-import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpHandlerFn,
+  HttpInterceptorFn,
+  HttpRequest,
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
 import { AuthenticationService } from '../_services/authentication.service';
 import { Router } from '@angular/router';
 import { SystemConfigurationStepEnum } from '../../_exceptions/system-config.enums';
@@ -28,7 +35,7 @@ export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err: any) => {
       if (err instanceof HttpErrorResponse) {
         if (err.status === 401) {
-          authService.logout();
+          handle401Error(authReq, next).subscribe();
         }
 
         if (err.status === 403) {
@@ -61,4 +68,21 @@ export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => err);
     })
   );
+
+  function handle401Error(req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> {
+    return authService.refreshToken().pipe(
+      switchMap((newToken) => {
+        const clonedRequest = req.clone({
+          setHeaders: {
+            Authorization: `Bearer ${newToken.token}`,
+          },
+        });
+        return next(clonedRequest);
+      }),
+      catchError((err) => {
+        authService.logout();
+        return throwError(() => err);
+      })
+    );
+  }
 };

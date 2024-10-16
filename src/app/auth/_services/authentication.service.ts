@@ -14,6 +14,10 @@ import { Router } from '@angular/router';
 export class AuthenticationService {
   private httpClient = inject(HttpClient);
   private router = inject(Router);
+
+  private refreshTokenInProgress = false;
+  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+
   userToken = new BehaviorSubject<AuthUser | null>(null);
 
   constructor() {}
@@ -22,6 +26,7 @@ export class AuthenticationService {
     return this.httpClient.post<LoginResponseDto>(`${environment.URL_API_BASE}/login`, loginRequest).pipe(
       tap((res) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('refreshToken', res.refreshToken);
 
         //decode the token
         const decodedToken = jwtDecode<AuthUser>(res.token);
@@ -54,9 +59,36 @@ export class AuthenticationService {
     return this.userToken.asObservable().pipe(map((user) => user !== null));
   }
 
+  refreshToken(): Observable<LoginResponseDto> {
+    if (this.refreshTokenInProgress) {
+      return this.refreshTokenSubject.asObservable();
+    } else {
+      this.refreshTokenInProgress = true;
+      this.refreshTokenSubject.next(null);
+
+      return this.httpClient
+        .post<LoginResponseDto>(`${environment.URL_API_BASE}/refresh-token`, { refreshToken: this.getRefreshToken() })
+        .pipe(
+          tap((response) => {
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('refreshToken', response.token);
+
+            const decodedToken = jwtDecode<AuthUser>(response.token);
+            this.userToken.next(decodedToken);
+
+            this.refreshTokenInProgress = false;
+            this.refreshTokenSubject.next(response.token);
+          })
+        );
+    }
+  }
+
   haveToken(): boolean {
     const authToken = localStorage.getItem('token');
 
     return !!authToken;
+  }
+  private getRefreshToken(): string {
+    return localStorage.getItem('refreshToken') || '';
   }
 }
