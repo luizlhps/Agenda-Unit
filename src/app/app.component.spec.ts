@@ -6,20 +6,20 @@ describe('AppComponent', () => {
   let mockAuthService: jest.Mocked<AuthenticationService>;
 
   beforeEach(() => {
-    // Criar um mock para o serviço de autenticação
+    // Create a mock for the authentication service
     mockAuthService = {
       autoLogin: jest.fn(),
     } as unknown as jest.Mocked<AuthenticationService>;
 
-    // Criar a instância do AppComponent com o serviço mockado
+    // Create an instance of the AppComponent with the mocked service
     appComponent = new AppComponent(mockAuthService);
   });
 
-  it('deve criar uma nova instância do AppComponent', () => {
+  it('must create a new instance of the AppComponent', () => {
     expect(appComponent).toBeTruthy();
   });
 
-  it('deve chamar autoLogin no ngOnInit', () => {
+  it('must call autoLogin in ngOnInit', () => {
     appComponent.ngOnInit();
     expect(mockAuthService.autoLogin).toHaveBeenCalled();
   });

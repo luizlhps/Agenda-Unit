@@ -35,10 +35,6 @@ export class AuthenticationService {
     );
   }
 
-  test() {
-    return this.httpClient.get(`${environment.URL_API_BASE}/users/1`);
-  }
-
   logout(): void {
     localStorage.removeItem('token');
     this.userToken.next(null);
@@ -85,9 +81,9 @@ export class AuthenticationService {
 
   haveToken(): boolean {
     const authToken = localStorage.getItem('token');
-
     return !!authToken;
   }
+
   private getRefreshToken(): string {
     return localStorage.getItem('refreshToken') || '';
   }
