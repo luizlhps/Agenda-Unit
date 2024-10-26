@@ -1,9 +1,8 @@
 import { AuthenticationService } from './authentication.service';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideRouter, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AuthenticationService', () => {
   let service: AuthenticationService;

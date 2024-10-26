@@ -4,6 +4,7 @@ import { HeaderComponent } from './_components/header/header.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './auth/_guards/auth.guard';
 import { ScheduleComponent } from './pages/scheduling/scheduling.component';
+import { SidebarComponent } from './_components/sidebar/sidebar.component';
 
 export const routes: Routes = [
   {
@@ -13,18 +14,28 @@ export const routes: Routes = [
   },
 
   {
-    path: 'scheduling',
-    component: ScheduleComponent,
-    canActivate: [AuthGuard],
-  },
-
-  {
     path: '',
     component: HeaderComponent,
     children: [
       {
         path: 'register',
         component: RegisterComponent,
+      },
+      {
+        path: 'login',
+        component: LoginComponent,
+      },
+    ],
+  },
+
+  {
+    path: '',
+    component: SidebarComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'scheduling',
+        component: ScheduleComponent,
       },
       {
         path: 'login',

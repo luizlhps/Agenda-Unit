@@ -53,7 +53,6 @@ export class LoginComponent {
 
   handleText() {
     console.log('loading');
-    this.authService.test().subscribe();
   }
 
   private setupFormListeners() {

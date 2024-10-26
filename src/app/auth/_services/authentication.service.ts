@@ -67,7 +67,7 @@ export class AuthenticationService {
         .pipe(
           tap((response) => {
             localStorage.setItem('token', response.token);
-            localStorage.setItem('refreshToken', response.token);
+            localStorage.setItem('refreshToken', response.refreshToken);
 
             const decodedToken = jwtDecode<AuthUser>(response.token);
             this.userToken.next(decodedToken);

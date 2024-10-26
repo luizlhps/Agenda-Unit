@@ -57,11 +57,9 @@ import { ICalendarEvent } from './_interfaces/calendar-event.interface';
 export class ScheduleComponent implements OnInit, OnDestroy {
   private sub = new Subscription();
 
-  protected menuItems: MenuItem[] | undefined;
   protected endDateCurrent = moment().endOf('month').format('YYYY-MM-DD');
   protected loadingScheduling = false;
 
-  private authService = inject(AuthenticationService);
   private schedulingApi = inject(SchedulingApiService);
 
   @ViewChild('schedule') schedule!: any;
@@ -108,21 +106,6 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit(): void {
-    this.menuItems = [
-      {
-        label: this.authService.userToken.value?.username,
-        items: [
-          {
-            label: 'Sair',
-            icon: 'pi pi-sign-out',
-            command: () => {
-              this.authService.logout();
-            },
-          },
-        ],
-      },
-    ];
-
     this.fetchShedulingCurrent();
   }
 
