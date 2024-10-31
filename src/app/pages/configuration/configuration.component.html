@@ -1,1 +1,110 @@
-<p>configuration works!</p>
+<div class="mb-5 mt-7 flex flex-col gap-1">
+  <h1 class="text-2xl text-primary-default">Configurações</h1>
+  <p class="text-grays-default">Administre suas configurações</p>
+</div>
+<p-tabView>
+  <!-- getClientAll <<  -->
+
+  <p-tabPanel header="Conta">
+    <div class="mt-8 flex flex-col justify-between gap-5 2xlv:flex-row 2xlv:gap-40">
+      <div class="flex min-w-[168px] flex-col gap-[6px]">
+        <h2>Perfil</h2>
+        <span class="text-grays-default">Configure seu perfil</span>
+      </div>
+      <div class="flex grow-[2] flex-col gap-10 lg:flex-row">
+        <!-- Image -->
+        <div class="mx-auto flex min-w-[100px] flex-col items-center gap-6">
+          <img
+            srcset="/assets/image.png"
+            alt="User Avatar"
+            width="96px"
+            height="96px"
+            loading="lazy"
+            class="min-h-24 min-w-24 rounded-full"
+          />
+          <button class="text-primary-medium">Mudar Imagem</button>
+        </div>
+
+        <!-- Form -->
+        <form action="submit" [formGroup]="profile" class="w-full">
+          <div class="flex w-full flex-col flex-wrap gap-5">
+            <div class="flex flex-wrap gap-4">
+              <input-text-form class="grow" [control]="profile.controls.name" label="Nome"></input-text-form>
+              <input-text-form
+                class="grow-[3]"
+                [control]="profile.controls.surname"
+                label="Sobrenome"
+              ></input-text-form>
+            </div>
+
+            <div class="flex grow flex-wrap gap-4">
+              <input-text-form class="grow-[10]" [control]="profile.controls.email" label="Email"></input-text-form>
+              <!-- phone -->
+              <div class="flex grow flex-col gap-2">
+                <label for="Nome">Celular de contato</label>
+                <p-inputMask
+                  styleClass="w-full "
+                  mask="(99) 99999-9999"
+                  placeholder="(99) 99999-9999"
+                  [ngClass]="{
+                    'ng-invalid ng-dirty':
+                      profile.get('phone')?.invalid && (profile.get('phone')?.dirty || profile.get('phone')?.touched),
+                  }"
+                  formControlName="phone"
+                  type="phone"
+                ></p-inputMask>
+                <small
+                  class="text-red-500"
+                  *ngIf="
+                    profile.get('phone')?.invalid && (profile.get('phone')?.dirty || profile.get('phone')?.touched)
+                  "
+                >
+                  Celular é obrigatório
+                </small>
+              </div>
+              <input-text-form class="grow" [control]="profile.controls.name" label="Cargo"></input-text-form>
+            </div>
+
+            <button *ngIf="profile.valid" class="text-end text-primary-medium">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <p-divider [style]="{ margin: '2.4rem 0' }" />
+
+    <div class="mt-8 flex flex-col justify-between gap-5 2xlv:flex-row 2xlv:gap-40">
+      <div class="flex w-[168px] flex-col gap-[6px]">
+        <h2>Endereço</h2>
+        <span class="text-grays-default">Configure seu Endereço</span>
+      </div>
+
+      <div class="flex grow-[2] flex-col gap-10 lg:flex-row">
+        <!-- Form -->
+        <div class="flex w-full grow flex-col flex-wrap gap-5">
+          <div class="flex grow flex-wrap gap-4">
+            <input-text-form class="grow" [control]="address.controls.cep" label="CEP"></input-text-form>
+            <input-text-form class="grow" [control]="address.controls.street" label="Rua"></input-text-form>
+            <input-text-form class="grow" [control]="address.controls.complement" label="Complemento"></input-text-form>
+          </div>
+
+          <div class="flex grow flex-wrap gap-4">
+            <input-text-form class="grow" [control]="address.controls.neighborhood" label="Bairro"></input-text-form>
+            <input-text-form class="grow" [control]="address.controls.city" label="Cidade"></input-text-form>
+
+            <div class="flex grow flex-wrap gap-4">
+              <input-text-form class="grow" [control]="address.controls.number" label="Nº"></input-text-form>
+              <input-text-form
+                class="grow sm:max-w-[85px]"
+                [control]="address.controls.state"
+                label="Estado"
+              ></input-text-form>
+            </div>
+          </div>
+          <button *ngIf="address.valid" class="text-end text-primary-medium">Salvar</button>
+        </div>
+      </div>
+    </div>
+
+    <p-divider [style]="{ margin: '2.4rem 0' }" />
+  </p-tabPanel>
+</p-tabView>

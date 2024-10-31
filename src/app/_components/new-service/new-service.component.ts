@@ -81,10 +81,6 @@ export class NewServiceComponent {
     this.sub.unsubscribe();
   }
 
-  sumDurations(...durations: moment.Duration[]): moment.Duration {
-    return durations.reduce((total, duration) => total.add(duration), moment.duration(0));
-  }
-
   onSubmit() {
     console.log(this.form);
 

@@ -5,6 +5,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { AuthGuard } from './auth/_guards/auth.guard';
 import { ScheduleComponent } from './pages/scheduling/scheduling.component';
 import { SidebarComponent } from './_components/sidebar/sidebar.component';
+import { ConfigurationComponent } from './pages/configuration/configuration.component';
 
 export const routes: Routes = [
   {
@@ -38,8 +39,8 @@ export const routes: Routes = [
         component: ScheduleComponent,
       },
       {
-        path: 'login',
-        component: LoginComponent,
+        path: 'config',
+        component: ConfigurationComponent,
       },
     ],
   },

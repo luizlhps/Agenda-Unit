@@ -24,6 +24,7 @@ import { MessageService } from 'primeng/api';
 import { durationHoursMinutes } from '../../../../shared/helpers/duration-helper';
 import { CalendarModule } from 'primeng/calendar';
 import { SystemConfigManagerSchedulingCreateDto } from '../../../_dtos/system-config-manager-scheduling-create.dto';
+import moment from 'moment';
 
 interface Services {
   name: string;
@@ -78,15 +79,11 @@ export class SchedulingComponent implements OnInit, OnDestroy {
 
   protected scheudulingForm = this.formBuilder.group({
     nameCustomer: new FormControl('', { validators: [Validators.required] }),
-    totalPrice: new FormControl(0, { validators: [Validators.min(1)] }),
+    totalPrice: new FormControl({ value: 0, disabled: true }, { validators: [Validators.required] }),
     phone: new FormControl('', { validators: [Validators.required] }),
-    date: new FormControl(new Date(Date.now()), { validators: [Validators.required] }),
+    date: new FormControl(new Date(Date.now())),
     email: new FormControl('', { validators: [Validators.email] }),
-    hours: new FormControl<TimeOption | null>({ name: '00 Horas', value: 0 }, { validators: [Validators.required] }),
-    minutes: new FormControl<TimeOption | null>(
-      { name: '00 Minutos', value: 0 },
-      { validators: [Validators.required] }
-    ),
+    duration: new FormControl('', { validators: [Validators.required] }),
     service: new FormControl<{ name: string; value: number } | null>(null, { validators: [Validators.required] }),
   });
 
@@ -101,7 +98,6 @@ export class SchedulingComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.fillTimeOptions();
     this.onChangeSelectService();
     this.fetchService();
   }
@@ -117,14 +113,11 @@ export class SchedulingComponent implements OnInit, OnDestroy {
     if (this.scheudulingForm.valid) {
       this.loading = true;
 
-      const hours = this.scheudulingForm.controls.hours.value?.value as number;
-      const minutes = this.scheudulingForm.controls.minutes.value?.value as number;
-
       let systemConfigManagerScheduleCreateDto: SystemConfigManagerSchedulingCreateDto = {
         scheduling: {
           totalPrice: this.scheudulingForm.controls.totalPrice.value ?? 0,
-          date: '10/04/2024',
-          duration: durationHoursMinutes(hours, minutes),
+          date: this.scheudulingForm.controls.date.value?.toISOString() ?? '',
+          duration: this.scheudulingForm.controls.duration.value ?? '',
         },
         customer: {
           email: this.scheudulingForm.controls.email.value ?? '',
@@ -191,40 +184,38 @@ export class SchedulingComponent implements OnInit, OnDestroy {
     );
   }
 
-  private fillTimeOptions() {
-    //minutes
-    for (let i = 0; i <= 55; i += 5) {
-      this.minutes.push({
-        name: `${String(i).padStart(2, '0')} Minutos`,
-        value: i,
-      });
-    }
-
-    //hours
-    for (let i = 0; i <= 24; i++) {
-      this.hours.push({
-        name: `${String(i).padStart(2, '0')} Horas`,
-        value: i,
-      });
-    }
-  }
-
   private fetchService() {
-    this.systemConfigManagerService.obtainService().subscribe({
-      next: (response) => {
-        const service: { name: string; value: number } = {
-          name: response.services.name,
-          value: response.services.id,
-        };
+    this.loading = true;
 
-        this.scheudulingForm.controls.service.patchValue(service);
-        this.services = [service];
+    this.scheudulingForm.disable();
+    this.systemConfigManagerService
+      .obtainService()
+      .pipe(
+        finalize(() => {
+          this.scheudulingForm.enable();
+          this.scheudulingForm.controls.totalPrice.disable();
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          const service: { name: string; value: number } = {
+            name: response.services.name,
+            value: response.services.id,
+          };
 
-        this.scheudulingForm.controls.totalPrice.setValue(response.services.price);
-      },
-      error: (error) => {
-        console.error(error);
-      },
-    });
+          this.scheudulingForm.controls.service.patchValue(service);
+
+          this.scheudulingForm.controls.duration.patchValue(moment.duration(response.services.duration).toISOString());
+
+          console.log(response);
+          this.services = [service];
+
+          this.scheudulingForm.controls.totalPrice.setValue(response.services.price);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
   }
 }

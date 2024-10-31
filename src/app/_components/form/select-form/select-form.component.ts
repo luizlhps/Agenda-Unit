@@ -15,6 +15,9 @@ export class SelectFormComponent<T> implements OnInit {
   @Input() id: string = 'dropdown';
   @Input() control!: FormControl;
   @Input() options: T[] = [];
+  @Input() disabled = false;
+  @Input() required = false;
+  @Input() readonly = false;
   @Output() onChange: EventEmitter<T> = new EventEmitter();
   @Input() optionLabel: string = 'name';
   @Input() validationMessage: string = 'Campo obrigatório';
