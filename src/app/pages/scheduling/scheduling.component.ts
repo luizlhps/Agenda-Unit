@@ -29,6 +29,7 @@ import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { finalize, Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ICalendarEvent } from './_interfaces/calendar-event.interface';
+import { SchedulingFormComponent } from '../../_components/scheduling-form/scheduling-form.component';
 
 @Component({
   selector: 'app-scheduling',
@@ -45,6 +46,7 @@ import { ICalendarEvent } from './_interfaces/calendar-event.interface';
     RouterLink,
     RouterModule,
     ProgressSpinnerModule,
+    SchedulingFormComponent,
   ],
   templateUrl: './scheduling.component.html',
   styleUrl: './scheduling.component.scss',
@@ -133,7 +135,7 @@ export class ScheduleComponent implements OnInit, OnDestroy {
             const items: ICalendarEvent[] = [];
 
             res.items.forEach((item) => {
-              var durationParts = item.service.duration.split(':');
+              var durationParts = item.duration.split(':');
 
               var duration = moment.duration({
                 hours: parseInt(durationParts[0], 10),
@@ -142,9 +144,14 @@ export class ScheduleComponent implements OnInit, OnDestroy {
               });
 
               //TODO: Verificar se ja tem um evento, caso tenha não adicionar mais e sim dar update nele
+
+              const hasMoreThanOneService =
+                item.schedulingServices.length > 1 ? item.schedulingServices.length - 1 + '+' : '';
+
               items.push({
                 id: item.id,
-                title: item.service.name,
+                title: item.schedulingServices[0].name + ' ' + hasMoreThanOneService,
+                description: item.notes ?? '',
                 start: moment(item.date).format('YYYY-MM-DD HH:mm'),
                 end: moment(item.date).add(duration).format('YYYY-MM-DD HH:mm'),
               });

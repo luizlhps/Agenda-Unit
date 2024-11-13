@@ -39,9 +39,10 @@
 
             <div class="flex grow flex-wrap gap-4">
               <input-text-form class="grow-[10]" [control]="profile.controls.email" label="Email"></input-text-form>
+
               <!-- phone -->
               <div class="flex grow flex-col gap-2">
-                <label for="Nome">Celular de contato</label>
+                <label for="phone">Celular de contato</label>
                 <p-inputMask
                   styleClass="w-full "
                   mask="(99) 99999-9999"
@@ -65,7 +66,7 @@
               <input-text-form class="grow" [control]="profile.controls.name" label="Cargo"></input-text-form>
             </div>
 
-            <button *ngIf="profile.valid" class="text-end text-primary-medium">Salvar</button>
+            <button class="mt-1 text-end text-primary-medium">Salvar</button>
           </div>
         </form>
       </div>
@@ -100,7 +101,7 @@
               ></input-text-form>
             </div>
           </div>
-          <button *ngIf="address.valid" class="text-end text-primary-medium">Salvar</button>
+          <button class="mt-1 text-end text-primary-medium">Salvar</button>
         </div>
       </div>
     </div>

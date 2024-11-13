@@ -3,6 +3,9 @@
 
   <div class="flex grow flex-col">
     <p-dropdown
+      [filter]="filter"
+      filterBy="name"
+      [showClear]="true"
       [id]="'teste'"
       [formControl]="control"
       [options]="options"
@@ -10,7 +13,8 @@
       [placeholder]="placeholder"
       (onChange)="onChange.emit($event.value)"
       styleClass="w-full"
-    />
+    >
+    </p-dropdown>
   </div>
   <small class="text-red-500" *ngIf="control?.invalid && (control?.dirty || control?.touched)">
     {{ validationMessage }}

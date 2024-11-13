@@ -2,11 +2,12 @@ import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDet
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { AuthenticationInterceptor } from './auth/_interceptors/authentication-interceptor.service';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PrimeNGConfig } from 'primeng/api';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -48,6 +49,7 @@ export const appConfig: ApplicationConfig = {
 
     provideRouter(routes),
     provideAnimations(),
-    provideHttpClient(withInterceptors([AuthenticationInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([AuthenticationInterceptor])),
+    provideClientHydration(),
   ],
 };

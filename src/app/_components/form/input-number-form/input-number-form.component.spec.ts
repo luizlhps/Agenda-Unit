@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarComponent } from './sidebar.component';
+import { InputNumberFormComponent } from './input-number-form.component';
 
-describe.skip('SidebarComponent', () => {
-  let component: SidebarComponent;
-  let fixture: ComponentFixture<SidebarComponent>;
+describe.skip('InputNumberFormComponent', () => {
+  let component: InputNumberFormComponent;
+  let fixture: ComponentFixture<InputNumberFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent],
+      imports: [InputNumberFormComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SidebarComponent);
+    fixture = TestBed.createComponent(InputNumberFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

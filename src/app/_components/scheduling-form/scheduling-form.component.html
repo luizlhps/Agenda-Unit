@@ -1,0 +1,91 @@
+<p-sidebar
+  styleClass="w-full max-w-[800px] !z-[2000] "
+  #sidebarRef
+  position="right"
+  [modal]="true"
+  [(visible)]="sidebarVisible"
+>
+  <ng-template pTemplate="headless">
+    <div class="h-full overflow-y-auto px-10">
+      <div class="mb-5 mt-7 flex flex-col gap-1">
+        <h1 class="mb-4 text-2xl text-primary-default">Agendamentos</h1>
+        <p class="max-w-96 text-grays-default">
+          {{
+            isEditMode
+              ? 'Atualizar Agendamento, preencha as informações abaixo'
+              : 'Crie um novo Agendamento, preencha as informações abaixo'
+          }}
+        </p>
+
+        <div class="mt-4 flex gap-2">
+          <select-form placeholder="Responsavel" class="grow" label="Responsável"></select-form>
+
+          <div class="flex grow flex-col gap-2 sm:col-span-1">
+            <label for="Data do agendamento">Data do agendamento</label>
+            <p-calendar dateFormat="dd/mm/yy" styleClass="w-full" formControlName="date" />
+          </div>
+        </div>
+
+        <span class="my-6 w-full border border-dashed"></span>
+
+        <div class="flex flex-col gap-4">
+          <input-text-form
+            class="grow-[10]"
+            [control]="schedulingForm.controls.name"
+            label="Nome do Cliente"
+          ></input-text-form>
+
+          <div class="flex gap-2">
+            <div class="flex grow flex-col gap-2">
+              <label for="phone">Celular de contato</label>
+              <p-inputMask
+                styleClass="grow w-full"
+                mask="(99) 99999-9999"
+                placeholder="(99) 99999-9999"
+                [ngClass]="{
+                  'ng-invalid ng-dirty':
+                    schedulingForm.get('phone')?.invalid &&
+                    (schedulingForm.get('phone')?.dirty || schedulingForm.get('phone')?.touched),
+                }"
+                formControlName="phone"
+                type="phone"
+              ></p-inputMask>
+              <small
+                class="text-red-500"
+                *ngIf="
+                  schedulingForm.get('phone')?.invalid &&
+                  (schedulingForm.get('phone')?.dirty || schedulingForm.get('phone')?.touched)
+                "
+              >
+                Celular é obrigatório
+              </small>
+            </div>
+
+            <input-text-form class="grow" [control]="schedulingForm.controls.name" label="Email"></input-text-form>
+          </div>
+
+          <span class="my-6 w-full border border-dashed"></span>
+
+          <div>
+            <div class="flex flex-wrap gap-2">
+              <select-form
+                [filter]="true"
+                placeholder="Serviço a ser realizado"
+                class="grow-[6]"
+                label="Serviço"
+              ></select-form>
+              <input-number-form class="grow" [control]="schedulingForm.controls.name" label="Valor">
+                <button external-icon>
+                  <i class="pi pi-trash"></i>
+                </button>
+              </input-number-form>
+            </div>
+            <button class="mt-1 text-primary-default">
+              <small>+Adicionar novo serviço</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-sidebar>

@@ -1,5 +1,6 @@
+import { UserService } from './../../_services/user.service';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -7,6 +8,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { InputTextFormComponent } from '../../_components/form/input-text-form/input-text-form.component';
 import { DividerModule } from 'primeng/divider';
 import { InputMaskModule } from 'primeng/inputmask';
+import { UserObtainedDto } from '../../_dtos/user-obtain.dto';
 
 @Component({
   selector: 'app-configuration',
@@ -25,8 +27,9 @@ import { InputMaskModule } from 'primeng/inputmask';
   templateUrl: './configuration.component.html',
   styleUrl: './configuration.component.scss',
 })
-export class ConfigurationComponent {
+export class ConfigurationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
+  private userService = inject(UserService);
 
   protected profile = this.formBuilder.group({
     name: ['', [Validators.required]],
@@ -45,4 +48,17 @@ export class ConfigurationComponent {
     number: ['', [Validators.required /* Validators.minLength(8) */]],
     state: ['', [Validators.required /* Validators.minLength(8) */]],
   });
+
+  ngOnInit(): void {
+    this.userService.getInfo().subscribe({
+      next: (res) => {
+        this.profile.controls.email.setValue(res.email);
+        this.profile.controls.name.setValue(res.name);
+        this.profile.controls.phone.setValue(res.phone);
+      },
+      error: (e) => {
+        // Handle error
+      },
+    });
+  }
 }

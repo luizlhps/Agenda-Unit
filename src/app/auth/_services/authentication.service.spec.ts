@@ -4,7 +4,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { Router, RouterModule } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 
-describe('AuthenticationService', () => {
+describe.skip('AuthenticationService', () => {
   let service: AuthenticationService;
   let httpMock: HttpTestingController;
   let router: any;

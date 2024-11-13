@@ -16,6 +16,8 @@ export class SelectFormComponent<T> implements OnInit {
   @Input() control!: FormControl;
   @Input() options: T[] = [];
   @Input() disabled = false;
+  @Input() showClear = false;
+  @Input() filter = false;
   @Input() required = false;
   @Input() readonly = false;
   @Output() onChange: EventEmitter<T> = new EventEmitter();

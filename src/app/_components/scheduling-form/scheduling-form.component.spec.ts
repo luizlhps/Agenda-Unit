@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SidebarComponent } from './sidebar.component';
+import { SchedulingFormComponent } from './scheduling-form.component';
 
-describe.skip('SidebarComponent', () => {
-  let component: SidebarComponent;
-  let fixture: ComponentFixture<SidebarComponent>;
+describe.skip('SchedulingFormComponent', () => {
+  let component: SchedulingFormComponent;
+  let fixture: ComponentFixture<SchedulingFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidebarComponent],
+      imports: [SchedulingFormComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SidebarComponent);
+    fixture = TestBed.createComponent(SchedulingFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

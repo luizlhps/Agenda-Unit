@@ -1,10 +1,10 @@
 import { LoginRequestDto } from './../../auth/_dtos/login-request.dto';
-import { Component, inject, OnChanges, SimpleChanges } from '@angular/core';
+import { afterRender, Component, inject, OnChanges, PLATFORM_ID, SimpleChanges } from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CommonModule, NgIf, NgTemplateOutlet } from '@angular/common';
+import { CommonModule, isPlatformBrowser, NgIf, NgTemplateOutlet } from '@angular/common';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
 import { finalize, take } from 'rxjs';
 import { handlerErrorBase } from '../../../shared/handler-error-base';
@@ -34,6 +34,7 @@ export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthenticationService);
   private router = inject(Router);
+  private readonly platform = inject(PLATFORM_ID);
 
   loading = false;
   errorMessage: string | null = null;
@@ -43,9 +44,19 @@ export class LoginComponent {
     password: ['', [Validators.required /* Validators.minLength(8) */]],
   });
 
+  /* constructor() {
+    afterRender(() => {
+      if (this.authService.haveToken()) {
+        this.router.navigate(['scheduling']);
+      }
+    });
+  } */
+
   ngOnInit(): void {
-    if (this.authService.haveToken()) {
-      this.router.navigate(['scheduling']);
+    if (isPlatformBrowser(this.platform)) {
+      if (this.authService.haveToken()) {
+        this.router.navigate(['scheduling']);
+      }
     }
 
     this.setupFormListeners();
