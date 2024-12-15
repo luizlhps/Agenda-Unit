@@ -19,6 +19,8 @@ import { ButtonModule } from 'primeng/button';
 import { NewServiceComponent } from '../new-service/new-service.component';
 import { Dialog, DialogModule } from 'primeng/dialog';
 import { SystemConfigManagerApiService } from '../../pages/system-config/_services/systemConfigManager.api.service';
+import moment from 'moment';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'scheduling-form',
@@ -37,6 +39,7 @@ import { SystemConfigManagerApiService } from '../../pages/system-config/_servic
     MenuModule,
     NewServiceComponent,
     DialogModule,
+    ToastModule,
   ],
   providers: [MessageService],
   templateUrl: './scheduling-form.component.html',
@@ -54,7 +57,7 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
   modalServiceVisible: boolean = false;
 
   menuServicesOptions: MenuItem[] | undefined;
-  menuSelectedServicesIndex: string = '0';
+  menuSelectedServicesIndex = 0;
 
   //Populate date
   items: ServiceListedDto[] = [];
@@ -81,7 +84,7 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
     >([
       this.formBuilder.group({
         service: this.formBuilder.control<ServiceListedDto | null>(null),
-        value: this.formBuilder.control<number | null>(0, Validators.required),
+        value: this.formBuilder.control<number | null>({ value: 0, disabled: true }),
       }),
     ]),
   });
@@ -135,8 +138,6 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
         allRows: true,
       },
     };
-
-    console.log(e);
   }
 
   onChangeServiceSelected(event?: any) {
@@ -152,7 +153,8 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
   }
 
   updatePrice(index: number, newService: ServiceListedDto | null): void {
-    const servicesArray = this.schedulingForm.controls.services as FormArray;
+    const servicesArray = this.schedulingForm.controls.services;
+
     const valueControl = (servicesArray.at(index) as FormGroup).get('value');
 
     if (newService) {
@@ -167,16 +169,18 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
 
     const serviceGroup = this.formBuilder.group({
       service: [service ?? null],
-      value: [service?.price ?? 0, Validators.required],
+      value: [{ value: service?.price ?? 0, disabled: true }],
     });
+
+    servicesArray.push(serviceGroup);
+
+    const indexCurrent = this.schedulingForm.controls.services.length - 1;
 
     this.sub.add(
       serviceGroup.controls.service?.valueChanges.subscribe((newService: ServiceListedDto | null) => {
-        this.updatePrice(servicesArray.length - 1, newService);
+        this.updatePrice(indexCurrent, newService);
       })
     );
-
-    servicesArray.push(serviceGroup);
   }
   removeService(index: number): void {
     const servicesArray = this.schedulingForm.controls.services;
@@ -193,7 +197,7 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
   }
 
   openMenu(menu: Menu, event: MouseEvent, index: number) {
-    this.menuSelectedServicesIndex = index.toString();
+    this.menuSelectedServicesIndex = index;
     this.initializeServiceMenuOptions();
     menu.toggle(event);
   }
@@ -250,14 +254,42 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
               this.modalServiceVisible = true;
               this.dialog.maximize();
             },
-            id: this.menuSelectedServicesIndex,
-          },
-          {
-            label: 'Editar Serviço',
-            icon: 'pi pi-upload',
           },
         ],
       },
     ];
+
+    if (this.schedulingForm.controls.services.controls[this.menuSelectedServicesIndex].value.service) {
+      this.menuServicesOptions[0].items?.push({
+        label: 'Editar Serviço',
+        icon: 'pi pi-upload',
+        command: (e: any) => {
+          this.openServiceEdit();
+        },
+      });
+    }
+  }
+
+  private openServiceEdit() {
+    this.modalServiceVisible = true;
+    this.dialog.maximize();
+
+    const service = this.schedulingForm.controls.services.controls[this.menuSelectedServicesIndex].value.service;
+    if (service) {
+      var durationParts = service.duration.split(':');
+
+      var duration = moment.duration({
+        hours: parseInt(durationParts[0], 10),
+        minutes: parseInt(durationParts[1], 10),
+        seconds: parseInt(durationParts[2], 10),
+      });
+
+      this.serviceForm.setValue({
+        price: service?.price ?? 0,
+        name: service?.name ?? '',
+        hours: this.hours.find((hours) => hours.value == duration.asHours()) ?? this.hours[0],
+        minutes: this.minutes.find((minutes) => minutes.value == duration.asHours()) ?? this.minutes[0],
+      });
+    }
   }
 }
