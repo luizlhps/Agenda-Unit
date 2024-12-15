@@ -3,18 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SystemConfigManagerCompanyCreatedDto } from '../_dtos/system-config-manager-company-created.dto';
-import { SystemConfigManagerServiceCreatedDto } from '../_dtos/system-config-manager-service-created.dto';
-import { environment } from '../../environments/environment';
-import { SystemConfigManagerServiceCreateDto } from '../_dtos/system-config-manager-service-create.dto';
-import { INewServiceApi } from '../_components/new-service/_interfaces/service.api.interface';
-import { SystemConfigManagerServiceObtainedDto } from '../_dtos/system-config-manager-service-obtained.dto';
+import { SystemConfigManagerApiServiceCreatedDto } from '../_dtos/system-config-manager-service-created.dto';
+import { environment } from '../../../../environments/environment';
+import { SystemConfigManagerApiServiceCreateDto } from '../_dtos/system-config-manager-service-create.dto';
+import { INewServiceApi } from '../../../_components/new-service/_interfaces/service.api.interface';
+import { SystemConfigManagerApiServiceObtainedDto } from '../_dtos/system-config-manager-service-obtained.dto';
 import { SystemConfigManagerSchedulingCreatedDto } from '../_dtos/system-config-manager-scheduling-created.dto';
 import { SystemConfigManagerSchedulingCreateDto } from '../_dtos/system-config-manager-scheduling-create.dto';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SystemConfigManagerService implements INewServiceApi {
+export class SystemConfigManagerApiService implements INewServiceApi {
   private httpClient = inject(HttpClient);
 
   constructor() {}
@@ -29,11 +29,11 @@ export class SystemConfigManagerService implements INewServiceApi {
   }
 
   createService(
-    systemConfigManagerServiceCreateDto: SystemConfigManagerServiceCreateDto
-  ): Observable<SystemConfigManagerServiceCreatedDto> {
-    return this.httpClient.post<SystemConfigManagerServiceCreatedDto>(
+    SystemConfigManagerApiServiceCreateDto: SystemConfigManagerApiServiceCreateDto
+  ): Observable<SystemConfigManagerApiServiceCreatedDto> {
+    return this.httpClient.post<SystemConfigManagerApiServiceCreatedDto>(
       `${environment.URL_API_BASE}/system-config/service`,
-      systemConfigManagerServiceCreateDto
+      SystemConfigManagerApiServiceCreateDto
     );
   }
 
@@ -46,8 +46,8 @@ export class SystemConfigManagerService implements INewServiceApi {
     );
   }
 
-  obtainService(): Observable<SystemConfigManagerServiceObtainedDto> {
-    return this.httpClient.get<SystemConfigManagerServiceObtainedDto>(
+  obtainService(): Observable<SystemConfigManagerApiServiceObtainedDto> {
+    return this.httpClient.get<SystemConfigManagerApiServiceObtainedDto>(
       `${environment.URL_API_BASE}/system-config/service`
     );
   }

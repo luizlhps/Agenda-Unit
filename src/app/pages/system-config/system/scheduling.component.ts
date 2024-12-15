@@ -9,7 +9,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { take, finalize, Subscription } from 'rxjs';
 import { handlerErrorBase } from '../../../../shared/handler-error-base';
 import { LogoSvgComponent } from '../../../_components/logo/logo.component';
-import { SystemConfigManagerService } from '../../../_services/systemConfigManager.service';
+import { SystemConfigManagerApiService } from '../_services/systemConfigManager.api.service';
 import { SelectFormComponent } from '../../../_components/form/select-form/select-form.component';
 import { FormControlPipe } from '../../../../shared/form-control-pipe';
 import { TooltipModule } from 'primeng/tooltip';
@@ -23,7 +23,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { durationHoursMinutes } from '../../../../shared/helpers/duration-helper';
 import { CalendarModule } from 'primeng/calendar';
-import { SystemConfigManagerSchedulingCreateDto } from '../../../_dtos/system-config-manager-scheduling-create.dto';
+import { SystemConfigManagerSchedulingCreateDto } from '../_dtos/system-config-manager-scheduling-create.dto';
 import moment from 'moment';
 
 interface Services {
@@ -65,7 +65,7 @@ export class SchedulingComponent implements OnInit, OnDestroy {
   private cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private messageService: MessageService = inject(MessageService);
 
-  systemConfigManagerService = inject(SystemConfigManagerService);
+  SystemConfigManagerApiService = inject(SystemConfigManagerApiService);
 
   hours: TimeOption[] = [];
   minutes: TimeOption[] = [];
@@ -115,9 +115,13 @@ export class SchedulingComponent implements OnInit, OnDestroy {
 
       let systemConfigManagerScheduleCreateDto: SystemConfigManagerSchedulingCreateDto = {
         scheduling: {
-          totalPrice: this.scheudulingForm.controls.totalPrice.value ?? 0,
           date: this.scheudulingForm.controls.date.value?.toISOString() ?? '',
           duration: this.scheudulingForm.controls.duration.value ?? '',
+          schedulingServices: {
+            discount: 0,
+            name: this.scheudulingForm.controls.service.value?.name ?? '',
+            price: this.scheudulingForm.controls.service.value?.value ?? 0,
+          },
         },
         customer: {
           email: this.scheudulingForm.controls.email.value ?? '',
@@ -127,8 +131,7 @@ export class SchedulingComponent implements OnInit, OnDestroy {
       };
 
       this.sub.add(
-        this.systemConfigManagerService
-          .createScheduling(systemConfigManagerScheduleCreateDto)
+        this.SystemConfigManagerApiService.createScheduling(systemConfigManagerScheduleCreateDto)
           .pipe(
             take(1),
             finalize(() => {
@@ -188,8 +191,7 @@ export class SchedulingComponent implements OnInit, OnDestroy {
     this.loading = true;
 
     this.scheudulingForm.disable();
-    this.systemConfigManagerService
-      .obtainService()
+    this.SystemConfigManagerApiService.obtainService()
       .pipe(
         finalize(() => {
           this.scheudulingForm.enable();

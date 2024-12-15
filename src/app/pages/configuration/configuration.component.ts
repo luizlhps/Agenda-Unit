@@ -1,4 +1,4 @@
-import { UserService } from './../../_services/user.service';
+import { UserServiceApi } from '../../_services/user.api.service';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,7 +29,7 @@ import { UserObtainedDto } from '../../_dtos/user-obtain.dto';
 })
 export class ConfigurationComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
-  private userService = inject(UserService);
+  private UserServiceApi = inject(UserServiceApi);
 
   protected profile = this.formBuilder.group({
     name: ['', [Validators.required]],
@@ -50,7 +50,7 @@ export class ConfigurationComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.userService.getInfo().subscribe({
+    this.UserServiceApi.getInfo().subscribe({
       next: (res) => {
         this.profile.controls.email.setValue(res.email);
         this.profile.controls.name.setValue(res.name);

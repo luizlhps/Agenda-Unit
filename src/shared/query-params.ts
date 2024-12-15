@@ -4,8 +4,8 @@ export interface QueryParams {
 }
 
 interface PageList {
-  pageNumber: number;
-  pageSize: number;
+  pageNumber?: number;
+  pageSize?: number;
   allRows?: boolean;
 }
 

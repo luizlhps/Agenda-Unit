@@ -3,7 +3,7 @@
 <p-dialog #dialog [modal]="true" [(visible)]="modalServiceVisible">
   <new-service
     (successHandler)="handlerSuccessCreatedService()"
-    [serviceApi]="systemConfigManagerService"
+    [serviceApi]="SystemConfigManagerApiService"
     [form]="serviceForm"
   ></new-service>
 </p-dialog>
@@ -80,7 +80,7 @@
         ></select-form>
       </div>
 
-      <!-- Data agendamento -->
+      <!-- Date -->
       <div class="col-span-2 flex flex-col gap-2 sm:col-span-1">
         <label for="Data do agendamento">Data do agendamento</label>
         <p-calendar dateFormat="dd/mm/yy" styleClass="w-full" formControlName="date" />

@@ -1,4 +1,4 @@
-import { SystemConfigManagerCompanyCreateDto } from './../../../_dtos/system-config-manager-company-create.dto';
+import { SystemConfigManagerCompanyCreateDto } from '../_dtos/system-config-manager-company-create.dto';
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,7 +8,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { finalize, take } from 'rxjs';
-import { SystemConfigManagerService } from '../../../_services/systemConfigManager.service';
+import { SystemConfigManagerApiService } from '../_services/systemConfigManager.api.service';
 import { handlerErrorBase } from '../../../../shared/handler-error-base';
 import { LogoSvgComponent } from '../../../_components/logo/logo.component';
 
@@ -33,7 +33,7 @@ import { LogoSvgComponent } from '../../../_components/logo/logo.component';
 export class CompanyComponent {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private systemConfigManagerService = inject(SystemConfigManagerService);
+  private SystemConfigManagerApiService = inject(SystemConfigManagerApiService);
 
   loading = false;
   errorMessage: string | null = null;
@@ -58,8 +58,7 @@ export class CompanyComponent {
         },
       };
 
-      this.systemConfigManagerService
-        .registerCompany(systemConfigManagerCompanyCreateDto)
+      this.SystemConfigManagerApiService.registerCompany(systemConfigManagerCompanyCreateDto)
         .pipe(
           take(1),
           finalize(() => {

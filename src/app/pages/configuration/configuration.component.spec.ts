@@ -1,10 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfigurationComponent } from './configuration.component';
-import { UserService } from '../../_services/user.service';
+import { UserServiceApi } from '../../_services/user.api.service';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-// Mock para ResizeObserver global
 window.ResizeObserver =
   window.ResizeObserver ||
   jest.fn().mockImplementation(() => ({
@@ -16,16 +15,16 @@ window.ResizeObserver =
 describe.skip('ConfigurationComponent', () => {
   let component: ConfigurationComponent;
   let fixture: ComponentFixture<ConfigurationComponent>;
-  let userService: UserService;
+  let UserServiceApi: UserServiceApi;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfigurationComponent], // Certifique-se de declarar o componente aqui
-      providers: [UserService, provideHttpClientTesting(), provideHttpClient()],
+      imports: [ConfigurationComponent],
+      providers: [UserServiceApi, provideHttpClientTesting(), provideHttpClient()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfigurationComponent);
-    userService = TestBed.inject(UserService);
+    UserServiceApi = TestBed.inject(UserServiceApi);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

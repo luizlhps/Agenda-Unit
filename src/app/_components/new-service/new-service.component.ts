@@ -13,10 +13,11 @@ import { SelectFormComponent } from '../form/select-form/select-form.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 import * as moment from 'moment';
 import { INewServiceApi } from './_interfaces/service.api.interface';
-import { SystemConfigManagerServiceCreatedDto } from '../../_dtos/system-config-manager-service-created.dto';
-import { SystemConfigManagerServiceCreateDto } from '../../_dtos/system-config-manager-service-create.dto';
+import { SystemConfigManagerApiServiceCreatedDto } from '../../pages/system-config/_dtos/system-config-manager-service-created.dto';
+import { SystemConfigManagerApiServiceCreateDto } from '../../pages/system-config/_dtos/system-config-manager-service-create.dto';
 import { handlerErrorBase } from '../../../shared/handler-error-base';
 import { durationHoursMinutes } from '../../../shared/helpers/duration-helper';
+import { ServiceCreateDto } from '../../_dtos/service-create.dto';
 
 @Component({
   selector: 'new-service',
@@ -95,7 +96,7 @@ export class NewServiceComponent {
       const hours = this.form.controls.hours.value?.value as number;
       const minutes = this.form.controls.minutes.value?.value as number;
 
-      const systemConfigManagerServiceCreateDto: SystemConfigManagerServiceCreateDto = {
+      const serviceCreateDto: ServiceCreateDto = {
         name: this.form.controls.name.value ?? '',
         price: this.form.controls.price.value ?? 0,
         duration: durationHoursMinutes(hours, minutes),
@@ -103,7 +104,7 @@ export class NewServiceComponent {
 
       this.sub.add(
         this.serviceApi
-          .createService(systemConfigManagerServiceCreateDto)
+          .createService(serviceCreateDto)
           .pipe(
             take(1),
             finalize(() => {
@@ -114,7 +115,7 @@ export class NewServiceComponent {
             next: (response) => {
               console.log(response);
 
-              if (response.success) {
+              if (response) {
                 this.loading = false;
                 this.errorMessage = null;
                 this.form.reset();

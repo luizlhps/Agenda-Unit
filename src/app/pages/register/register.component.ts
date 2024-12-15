@@ -1,6 +1,6 @@
 import { LoginResponseDto } from './../../auth/_dtos/login-response.dto';
 import { AuthenticationService } from './../../auth/_services/authentication.service';
-import { UserService } from './../../_services/user.service';
+import { UserServiceApi } from '../../_services/user.api.service';
 import { UserCreatedDto } from './../../_dtos/user-created.dto';
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
@@ -32,7 +32,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 export class RegisterComponent {
   private formBuilder = inject(FormBuilder);
   private router = inject(Router);
-  private userService = inject(UserService);
+  private UserServiceApi = inject(UserServiceApi);
   private authenticationService = inject(AuthenticationService);
 
   loading = false;
@@ -64,8 +64,7 @@ export class RegisterComponent {
 
       userCreatedDto.phone = userCreatedDto.phone.replace(/\D/g, '');
 
-      this.userService
-        .register(userCreatedDto)
+      this.UserServiceApi.register(userCreatedDto)
         .pipe(
           finalize(() => {
             this.loading = false;
@@ -85,8 +84,6 @@ export class RegisterComponent {
         .subscribe((loginResponse) => {
           if (loginResponse) {
             this.router.navigate(['scheduling']);
-          } else {
-            this.errorMessage = 'Falha ao efetuar login';
           }
         });
     }

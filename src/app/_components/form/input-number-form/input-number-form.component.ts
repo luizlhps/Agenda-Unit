@@ -7,7 +7,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 @Component({
   selector: 'input-number-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, InputNumberModule, NgClass],
+  imports: [ReactiveFormsModule, InputNumberModule, NgClass],
   templateUrl: './input-number-form.component.html',
   styleUrl: './input-number-form.component.scss',
 })
@@ -16,10 +16,8 @@ export class InputNumberFormComponent {
   @Input() label!: string;
   @Input() minFractionDigits!: string;
   @Input() maxFractionDigits!: string;
-  @Input() mode!: string;
+  @Input() mode: 'decimal' | 'currency' = 'currency';
   @Input() formId!: string;
   @Input() placeholder!: string;
-  @Input() disabled = false;
-  @Input() required = false;
-  @Input() readonly = false;
+  @Input() currency: string = 'BRL';
 }
