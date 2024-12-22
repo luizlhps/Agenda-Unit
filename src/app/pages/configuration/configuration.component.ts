@@ -1,14 +1,14 @@
-import { UserServiceApi } from '../../_services/user.api.service';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TabViewModule } from 'primeng/tabview';
-import { InputTextFormComponent } from '../../_components/form/input-text-form/input-text-form.component';
 import { DividerModule } from 'primeng/divider';
 import { InputMaskModule } from 'primeng/inputmask';
-import { UserObtainedDto } from '../../_dtos/user-obtain.dto';
+import { UserObtainedDto } from '../../_features/user/_dtos/user-obtain.dto';
+import { UserServiceApi } from '../../_features/user/_services/apis/user.api.service';
+import { InputTextFormComponent } from '../../_shared/_components/forms/input-text-form/input-text-form.component';
 
 @Component({
   selector: 'app-configuration',

@@ -18,18 +18,18 @@ import '@schedule-x/theme-default/dist/index.css';
 import { createEventModalPlugin } from '@schedule-x/event-modal';
 import { ButtonModule } from 'primeng/button';
 import { RippleModule } from 'primeng/ripple';
-import { LogoSvgComponent } from '../../_components/logo/logo.component';
+import { LogoSvgComponent } from '../../_shared/_components/logo/logo.component';
 import { CommonModule } from '@angular/common';
 import { TabViewModule } from 'primeng/tabview';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
-import { SchedulingApiService } from './_services/scheduling.api.service';
-import { SchedulingListDto } from './_dtos/scheduling-list.dto';
+import { SchedulingApiService } from '../../_features/scheduling/_services/scheduling.api.service';
+import { SchedulingListDto } from '../../_features/scheduling/_dtos/scheduling-list.dto';
 import moment from 'moment';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
 import { finalize, Subscription } from 'rxjs';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ICalendarEvent } from './_interfaces/calendar-event.interface';
-import { SchedulingFormComponent } from '../../_components/scheduling-form/scheduling-form.component';
+import { SchedulingFormComponent } from '../../_features/scheduling/scheduling-form/scheduling-form.component';
 
 @Component({
   selector: 'app-scheduling',

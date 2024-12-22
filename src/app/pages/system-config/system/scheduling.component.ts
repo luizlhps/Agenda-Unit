@@ -7,24 +7,23 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { take, finalize, Subscription } from 'rxjs';
-import { handlerErrorBase } from '../../../../shared/handler-error-base';
-import { LogoSvgComponent } from '../../../_components/logo/logo.component';
+import { LogoSvgComponent } from '../../../_shared/_components/logo/logo.component';
 import { SystemConfigManagerApiService } from '../_services/systemConfigManager.api.service';
-import { SelectFormComponent } from '../../../_components/form/select-form/select-form.component';
-import { FormControlPipe } from '../../../../shared/form-control-pipe';
 import { TooltipModule } from 'primeng/tooltip';
 import { Dialog, DialogModule } from 'primeng/dialog';
-import { TimeOption } from '../../../_components/new-service/_interfaces/time-stamp.interface';
-import { NewServiceComponent } from '../../../_components/new-service/new-service.component';
+import { TimeOption } from '../../../_features/new-service/_interfaces/time-stamp.interface';
+import { NewServiceComponent } from '../../../_features/new-service/new-service.component';
 
 import { LayoutModule } from '@angular/cdk/layout';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { durationHoursMinutes } from '../../../../shared/helpers/duration-helper';
 import { CalendarModule } from 'primeng/calendar';
 import { SystemConfigManagerSchedulingCreateDto } from '../_dtos/system-config-manager-scheduling-create.dto';
 import moment from 'moment';
+import { SelectFormComponent } from '../../../_shared/_components/forms/select-form/select-form.component';
+import { FormControlPipe } from '../../../_shared/_utils/form-control-pipe';
+import { handlerErrorBase } from '../../../_shared/_utils/handler-error-base';
 
 interface Services {
   name: string;
@@ -45,7 +44,6 @@ interface Services {
     InputMaskModule,
     ButtonModule,
     SelectFormComponent,
-    FormControlPipe,
     TooltipModule,
     DialogModule,
     NewServiceComponent,
@@ -88,6 +86,7 @@ export class SchedulingComponent implements OnInit, OnDestroy {
   });
 
   protected serviceForm = this.formBuilder.group({
+    id: new FormControl<number | null>(null),
     name: new FormControl('', { validators: [Validators.required] }),
     hours: new FormControl<TimeOption | null>({ name: '00 Horas', value: 0 }, { validators: [Validators.required] }),
     minutes: new FormControl<TimeOption | null>(

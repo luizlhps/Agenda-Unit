@@ -1,3 +1,3 @@
-import { ServiceCreateDto } from '../../../_dtos/service-create.dto';
+import { ServiceCreateDto } from '../../../_features/service/_dtos/service-create.dto';
 
 export interface SystemConfigManagerApiServiceCreateDto extends ServiceCreateDto {}

@@ -7,10 +7,10 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { CommonModule, isPlatformBrowser, NgIf, NgTemplateOutlet } from '@angular/common';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
 import { finalize, take } from 'rxjs';
-import { handlerErrorBase } from '../../../shared/handler-error-base';
 import { AnimateOnScrollModule } from 'primeng/animateonscroll';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { handlerErrorBase } from '../../_shared/_utils/handler-error-base';
 @Component({
   selector: 'app-login',
   standalone: true,

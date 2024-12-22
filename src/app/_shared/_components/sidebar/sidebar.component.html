@@ -1,0 +1,117 @@
+<p-sidebar
+  autoZIndex="false"
+  [styleClass]="mobile ? 'w-screen z-[1000]' : 'w-64 z-[1000]'"
+  #sidebarRef
+  [modal]="false"
+  [(visible)]="sidebarVisible"
+>
+  <ng-template pTemplate="headless">
+    <div class="flex h-[51px] w-full items-center justify-between border-b border-[#D9D9D9] bg-white p-4">
+      <logo-svg class="block h-[30px] w-[150px]" />
+      <button (click)="sidebarVisible = false" class="items-center justify-center">
+        <i class="pi pi-bars text-lg text-primary-default"></i>
+      </button>
+    </div>
+
+    <div class="px-6">
+      <div
+        pRipple
+        enterClass="hidden"
+        enterActiveClass="slidedown"
+        leaveToClass="hidden"
+        leaveActiveClass="slideup"
+        class="align-items-center justify-content-between text-600 p-ripple flex cursor-pointer"
+      >
+        <p class="mb-2 mt-8">APLICAÇÕES</p>
+      </div>
+      <ul class="m-0 list-none overflow-hidden p-0">
+        <li>
+          <a
+            [routerLink]="['/scheduling']"
+            routerLinkActive="text-primary-default"
+            [routerLinkActiveOptions]="{ exact: true }"
+            pRipple
+            class="align-items-center border-round text-700 hover:surface-100 transition-duration-150 p-ripple my-5 flex cursor-pointer transition-colors"
+          >
+            <i class="pi pi-calendar mr-2"></i>
+            <span class="font-medium">Agendamentos</span>
+          </a>
+        </li>
+        <li>
+          <a
+            pRipple
+            class="align-items-center border-round text-700 hover:surface-100 transition-duration-150 p-ripple my-5 flex cursor-pointer transition-colors"
+          >
+            <i class="pi pi-user mr-2"></i>
+            <span class="font-medium">Clientes</span>
+          </a>
+        </li>
+        <li>
+          <a
+            pRipple
+            pStyleClass="@next"
+            enterClass="hidden"
+            enterActiveClass="slidedown"
+            leaveToClass="hidden"
+            leaveActiveClass="slideup"
+            class="align-items-center border-round text-700 hover:surface-100 transition-duration-150 p-ripple my-5 flex cursor-pointer transition-colors"
+          >
+            <i class="pi pi-chart-line mr-2"></i>
+            <span class="font-medium">Serviços</span>
+          </a>
+        </li>
+      </ul>
+
+      <div
+        pRipple
+        enterClass="hidden"
+        enterActiveClass="slidedown"
+        leaveToClass="hidden"
+        leaveActiveClass="slideup"
+        class="align-items-center justify-content-between text-600 p-ripple flex cursor-pointer"
+      >
+        <p class="mb-2 mt-8">SISTEMA</p>
+      </div>
+      <ul class="m-0 list-none overflow-hidden p-0">
+        <li>
+          <a
+            [routerLink]="['/config']"
+            pRipple
+            class="align-items-center border-round text-700 hover:surface-100 transition-duration-150 p-ripple my-5 flex cursor-pointer transition-colors"
+          >
+            <i class="pi pi-cog mr-2"></i>
+            <span class="font-medium">Configurações</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+</p-sidebar>
+
+<div
+  class="fixed z-10 flex h-[51px] w-full border-b border-[#D9D9D9] bg-white transition-[padding-left] duration-75"
+  [ngClass]="{ 'pl-64': sidebarVisible && !mobile }"
+>
+  <div class="flex h-full w-full justify-between px-6 py-1">
+    <button *ngIf="!sidebarVisible" (click)="sidebarVisible = true" class="items-center justify-center">
+      <i class="pi pi-bars text-lg text-primary-default"></i>
+    </button>
+
+    <p-menu #menu [model]="menuItems" [popup]="true" />
+
+    <button (click)="menu.toggle($event)">
+      <p-avatar
+        icon="pi pi-user"
+        size="normal"
+        class="flex items-center justify-end"
+        [style]="{ 'background-color': '#ece9fc', color: '#2a1261' }"
+        shape="circle"
+      />
+    </button>
+  </div>
+</div>
+<div [ngClass]="{ 'ml-64': sidebarVisible && !mobile }" class="relative h-full transition-[margin-left] duration-100">
+  <div class="min-h-full p-6 pt-14">
+    <router-outlet></router-outlet>
+  </div>
+</div>

@@ -6,7 +6,7 @@ import { SystemConfigManagerCompanyCreatedDto } from '../_dtos/system-config-man
 import { SystemConfigManagerApiServiceCreatedDto } from '../_dtos/system-config-manager-service-created.dto';
 import { environment } from '../../../../environments/environment';
 import { SystemConfigManagerApiServiceCreateDto } from '../_dtos/system-config-manager-service-create.dto';
-import { INewServiceApi } from '../../../_components/new-service/_interfaces/service.api.interface';
+import { INewServiceApi } from '../../../_features/new-service/_interfaces/service.api.interface';
 import { SystemConfigManagerApiServiceObtainedDto } from '../_dtos/system-config-manager-service-obtained.dto';
 import { SystemConfigManagerSchedulingCreatedDto } from '../_dtos/system-config-manager-scheduling-created.dto';
 import { SystemConfigManagerSchedulingCreateDto } from '../_dtos/system-config-manager-scheduling-create.dto';

@@ -12,8 +12,8 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthenticationService } from '../_services/authentication.service';
 import { Router } from '@angular/router';
-import { SystemConfigurationStepEnum } from '../../_exceptions/system-config.enums';
-import { SystemConfigurationExceptions } from '../../_exceptions/system-config-exceptions';
+import { SystemConfigurationExceptions } from '../../_shared/_exceptions/system-config-exceptions';
+import { SystemConfigurationStepEnum } from '../../_shared/_exceptions/system-config.enums';
 
 export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthenticationService);

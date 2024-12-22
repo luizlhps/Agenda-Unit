@@ -9,8 +9,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { finalize, take } from 'rxjs';
 import { SystemConfigManagerApiService } from '../_services/systemConfigManager.api.service';
-import { handlerErrorBase } from '../../../../shared/handler-error-base';
-import { LogoSvgComponent } from '../../../_components/logo/logo.component';
+import { LogoSvgComponent } from '../../../_shared/_components/logo/logo.component';
+import { handlerErrorBase } from '../../../_shared/_utils/handler-error-base';
 
 @Component({
   selector: 'app-company',

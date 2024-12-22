@@ -7,7 +7,7 @@ import { InputMaskModule } from 'primeng/inputmask';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { AuthenticationService } from '../../auth/_services/authentication.service';
-import { LogoSvgComponent } from '../../_components/logo/logo.component';
+import { LogoSvgComponent } from '../../_shared/_components/logo/logo.component';
 
 @Component({
   selector: 'app-system-config',
