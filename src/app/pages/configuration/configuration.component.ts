@@ -21,7 +21,6 @@ import { InputTextFormComponent } from '../../_shared/_components/forms/input-te
     ReactiveFormsModule,
     InputTextModule,
     InputTextFormComponent,
-    NgOptimizedImage,
     InputMaskModule,
   ],
   templateUrl: './configuration.component.html',

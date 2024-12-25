@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-2">
-  <label for="Duração">{{ label }}</label>
+  <label *ngIf="label" for="Duração">{{ label }}</label>
 
   <div class="relative flex grow flex-col">
     <p-dropdown
@@ -19,11 +19,14 @@
       (onLazyLoad)="onLazyLoad.emit($event)"
       [virtualScrollItemSize]="virtualScrollItemSize"
       [virtualScrollOptions]="scrollOptions"
+      [ngClass]="{
+        'ng-invalid ng-dirty': control.invalid && (control.dirty || control.touched),
+      }"
     >
     </p-dropdown>
     <ng-content select="[sufix]"></ng-content>
   </div>
-  <small class="text-red-500" *ngIf="control?.invalid && (control?.dirty || control?.touched)">
+  <small class="text-red-500" *ngIf="control?.invalid && (control?.dirty || control?.touched) && validationMessage">
     {{ validationMessage }}
   </small>
 </div>

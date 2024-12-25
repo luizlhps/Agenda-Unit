@@ -1,10 +1,10 @@
 export interface SchedulingListedDto {
   id: number;
   date: string;
-  notes: string | null;
+  notes: string;
   statusId: number;
-  cancelNote: string | null;
-  totalPrice: number | null;
+  cancelNote: string;
+  totalPrice: number;
   staffUserId: number;
   serviceId: number;
   companyId: number;
@@ -17,28 +17,33 @@ export interface SchedulingListedDto {
   user: UserDto;
 }
 
-export interface UserDto {
+interface UserDto {
   name: string;
   username: string;
+  role: RoleDto;
   phone: string;
 }
 
-export interface CustomerDto {
+interface RoleDto {
+  name: string;
+}
+
+interface CustomerDto {
   name: string;
   phone: string;
   email: string;
 }
 
-export interface SchedulingServiceDto {
-  serviceId: number | null;
-  schedulingId: number | null;
+interface SchedulingServiceDto {
+  serviceId: number;
+  schedulingId: number;
   name: string;
-  price: number | null;
-  totalPrice: number | null;
-  discount: number | null;
-  isDeleted: boolean | null;
+  price: number;
+  totalPrice: number;
+  discount: number;
+  isDeleted: boolean;
 }
 
-export interface StatusDto {
+interface StatusDto {
   name: string;
 }

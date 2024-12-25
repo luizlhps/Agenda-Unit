@@ -17,7 +17,7 @@
   [(visible)]="sidebarVisible"
 >
   <ng-template pTemplate="headless">
-    <form [formGroup]="schedulingForm" class="mb-5 h-full overflow-y-auto px-10">
+    <form (submit)="onSubmit()" [formGroup]="schedulingForm" class="h-full overflow-y-auto px-10 pb-5">
       <div class="mt-7 flex flex-col gap-1">
         <h1 class="mb-4 text-2xl text-primary-default">Agendamentos</h1>
         <p class="max-w-96 text-grays-default">
@@ -29,52 +29,70 @@
         </p>
 
         <div class="mt-4 flex gap-2">
-          <select-form placeholder="Responsavel" class="grow" label="Responsável"></select-form>
+          <select-form
+            [options]="itemsEmployees"
+            placeholder="Responsavel"
+            class="shrink grow basis-0"
+            [control]="schedulingForm.controls.employer"
+            [showClear]="true"
+            label="Responsável"
+          ></select-form>
 
-          <div class="flex grow flex-col gap-2 sm:col-span-1">
+          <div class="flex shrink grow basis-0 flex-col gap-2">
             <label for="Data do agendamento">Data do agendamento</label>
             <p-calendar dateFormat="dd/mm/yy" styleClass="w-full" formControlName="date" />
+
+            <small
+              error-message
+              class="text-red-500"
+              *ngIf="
+                schedulingForm.get('date')?.invalid &&
+                (schedulingForm.get('date')?.dirty || schedulingForm.get('date')?.touched)
+              "
+            >
+              Data é obrigatório
+            </small>
           </div>
         </div>
 
         <span class="my-6 w-full border border-dashed"></span>
 
         <div class="flex flex-col gap-4">
-          <!-- Nome -->
-          <input-text-form class="grow-[10]" [control]="schedulingForm.controls.name" label="Nome do Cliente">
-            <small
-              error-message
-              class="text-red-500"
-              *ngIf="
-                schedulingForm.get('name')?.invalid &&
-                (schedulingForm.get('name')?.dirty || schedulingForm.get('name')?.touched)
-              "
-            >
-              Nome é obrigatório
-            </small>
-          </input-text-form>
+          <!-- CUSTOMER -->
+          <select-form
+            [control]="schedulingForm.controls.customer.controls.selected"
+            [virtualScroll]="true"
+            [virtualScrollItemSize]="30"
+            [options]="itemsCustomer"
+            [scrollOptions]="scrollOptions"
+            validationMessage="Cliente é obrigatório"
+            placeholder="Selecione o cliente"
+            class="grow-[6]"
+            label="Cliente"
+          ></select-form>
 
           <!-- PHONE -->
           <div class="flex gap-2">
             <div class="flex grow flex-col gap-2">
-              <label for="phone">Celular de contato</label>
+              <label id="phone" for="phone">Celular de contato</label>
               <p-inputMask
+                id="phone"
                 styleClass="grow w-full"
                 mask="(99) 99999-9999"
                 placeholder="(99) 99999-9999"
                 [ngClass]="{
                   'ng-invalid ng-dirty':
-                    schedulingForm.get('phone')?.invalid &&
-                    (schedulingForm.get('phone')?.dirty || schedulingForm.get('phone')?.touched),
+                    schedulingForm.get('customer.phone')?.invalid &&
+                    (schedulingForm.get('customer.phone')?.dirty || schedulingForm.get('customer.phone')?.touched),
                 }"
-                formControlName="phone"
+                [formControl]="schedulingForm.controls.customer.controls.phone"
                 type="phone"
               ></p-inputMask>
               <small
                 class="text-red-500"
                 *ngIf="
-                  schedulingForm.get('phone')?.invalid &&
-                  (schedulingForm.get('phone')?.dirty || schedulingForm.get('phone')?.touched)
+                  schedulingForm.get('customer.phone')?.invalid &&
+                  (schedulingForm.get('customer.phone')?.dirty || schedulingForm.get('customer.phone')?.touched)
                 "
               >
                 Celular é obrigatório
@@ -82,13 +100,18 @@
             </div>
 
             <!-- EMAIL -->
-            <input-text-form class="grow" [control]="schedulingForm.controls.email" label="Email">
+            <input-text-form
+              formId="email"
+              class="grow"
+              [control]="schedulingForm.controls.customer.controls.email"
+              label="Email"
+            >
               <small
                 error-message
                 class="text-red-500"
                 *ngIf="
-                  schedulingForm.get('email')?.invalid &&
-                  (schedulingForm.get('email')?.dirty || schedulingForm.get('email')?.touched)
+                  schedulingForm.get('customer.email')?.invalid &&
+                  (schedulingForm.get('customer.email')?.dirty || schedulingForm.get('customer.email')?.touched)
                 "
               >
                 Email é obrigatório
@@ -107,14 +130,16 @@
                   <select-form
                     [control]="serviceGroup.controls.service"
                     [virtualScroll]="true"
-                    [virtualScrollItemSize]="20"
+                    [virtualScrollItemSize]="50"
                     [options]="items"
                     [scrollOptions]="scrollOptions"
+                    validationMessage=""
                     placeholder="Serviço a ser realizado"
                     class="grow-[6]"
                     [label]="$index == 0 ? 'Serviço' : ''"
                   >
                     <button
+                      type="button"
                       (click)="openMenu(menu, $event, $index)"
                       icon="pi pi-ellipsis-v"
                       sufix
@@ -123,7 +148,7 @@
                       <i class="pi pi-ellipsis-h"></i></button
                   ></select-form>
                   <input-number-form class="grow sm:grow-0" [control]="serviceGroup.controls.value">
-                    <button external-icon (click)="removeService($index)">
+                    <button type="button" external-icon (click)="removeService($index)">
                       <i class="pi pi-trash"></i>
                     </button>
                   </input-number-form>
@@ -131,9 +156,20 @@
               }
             </div>
 
-            <button (click)="addService()" class="mt-1 text-primary-default">
-              <small>+Adicionar novo serviço</small>
-            </button>
+            <div class="flex w-fit flex-col gap-2">
+              <small
+                class="mt-2 text-red-500"
+                *ngIf="
+                  schedulingForm.controls.services.invalid &&
+                  (schedulingForm.controls.services.dirty || schedulingForm.controls.services.touched)
+                "
+              >
+                Serviços são obrigatórios
+              </small>
+              <button type="button" (click)="addService()" class="mt-1 text-primary-default">
+                <small>+Adicionar novo serviço</small>
+              </button>
+            </div>
           </div>
 
           <!-- duração -->
@@ -145,42 +181,62 @@
               <select-form
                 class="grow-[2]"
                 [options]="hours"
-                [control]="schedulingForm.controls.hours"
+                [control]="schedulingForm.controls.duration.controls.hours"
                 placeholder="00 Horas"
               ></select-form>
               <select-form
                 class="grow-[2]"
                 [options]="minutes"
-                [control]="schedulingForm.controls.minutes"
+                [control]="schedulingForm.controls.duration.controls.minutes"
                 placeholder="00 Minutos"
               ></select-form>
               <button pTooltip="Mudar Para Data" tooltipPosition="bottom" type="button">
                 <i class="pi pi-calendar"></i>
               </button>
             </div>
+            <small
+              *ngIf="
+                schedulingForm.get('duration')?.errors?.['invalidDuration'] && schedulingForm.get('duration')?.touched
+              "
+              class="text-red-500"
+            >
+              A duração não pode ser 0 horas e 0 minutos.
+            </small>
           </div>
 
           <input-textarea-form
             class="grow"
+            formId="observation"
             [control]="schedulingForm.controls.observation"
             label="Observações"
             placeholder="Digite suas observações"
           ></input-textarea-form>
 
-          <input-number-form class="grow" [control]="schedulingForm.controls.discount" label="Desconto">
+          <input-number-form
+            formId="discount"
+            class="grow"
+            [control]="schedulingForm.controls.discount"
+            label="Desconto"
+          >
           </input-number-form>
 
           <div class="flex flex-wrap gap-2">
-            <input-number-form class="grow" [control]="schedulingForm.controls.price" label="Valor">
+            <input-number-form formId="price" class="grow" [control]="schedulingForm.controls.price" label="Valor">
             </input-number-form>
 
-            <input-number-form class="grow" [control]="schedulingForm.controls.valueTotal" label="Valor Total">
+            <input-number-form
+              formId="valueTotal"
+              class="grow"
+              [control]="schedulingForm.controls.valueTotal"
+              label="Valor Total"
+            >
             </input-number-form>
           </div>
         </div>
       </div>
 
-      <p-button size="small" [loading]="loading" type="submit" styleClass="mt-8 block w-full " label="Prosseguir" />
+      <p-button size="small" [loading]="loading" type="submit" styleClass="mt-8 block w-full " label="Criar" />
+      <small *ngIf="errorMessage" class="mt-2 block w-full text-center text-red-600"> {{ errorMessage }}</small>
     </form>
   </ng-template>
 </p-sidebar>

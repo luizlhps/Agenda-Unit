@@ -80,6 +80,7 @@ export const AuthenticationInterceptor: HttpInterceptorFn = (req, next) => {
         return next(clonedRequest);
       }),
       catchError((err) => {
+        console.log('Refresh não ocorreu: ' + err);
         authService.logout();
         return throwError(() => err);
       })

@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 @Component({
   selector: 'input-text-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, InputTextModule, NgClass],
+  imports: [ReactiveFormsModule, InputTextModule, NgClass],
   templateUrl: './input-text-form.component.html',
   styleUrl: './input-text-form.component.scss',
 })

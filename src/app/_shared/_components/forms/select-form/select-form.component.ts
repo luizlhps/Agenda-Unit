@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, OnChanges, ViewChild, ContentChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Dropdown, DropdownModule } from 'primeng/dropdown';
@@ -10,7 +10,7 @@ import { Menu } from 'primeng/menu';
 @Component({
   selector: 'select-form',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, DropdownModule],
+  imports: [ReactiveFormsModule, NgIf, DropdownModule, NgClass],
   templateUrl: './select-form.component.html',
   styleUrl: './select-form.component.scss',
 })
@@ -48,8 +48,3 @@ export class SelectFormComponent<T> implements OnInit {
     }
   }
 }
-
-//passo a rota
-//ele por padrão acessa os page
-// caso eu queira passo uma dto para um filtro personalziado
-// mas e para um search ? como seria ?

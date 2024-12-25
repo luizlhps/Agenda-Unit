@@ -36,11 +36,12 @@ export const routes: Routes = [
     children: [
       {
         path: 'scheduling',
-        component: ScheduleComponent,
+        loadComponent: () => import('./pages/scheduling/scheduling.component').then((m) => m.ScheduleComponent),
       },
       {
         path: 'config',
-        component: ConfigurationComponent,
+        loadComponent: () =>
+          import('./pages/configuration/configuration.component').then((m) => m.ConfigurationComponent),
       },
     ],
   },

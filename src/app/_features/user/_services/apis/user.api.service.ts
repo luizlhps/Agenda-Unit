@@ -1,3 +1,4 @@
+import { PageResult } from './../../../../_shared/_utils/page-result';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -25,8 +26,8 @@ export class UserServiceApi {
     return this.httpClient.get<UserObtainedDto>(`${environment.URL_API_BASE}/me`);
   }
 
-  getAll(userListDto: UserListDto): Observable<UserListedDto> {
+  getAll(userListDto: UserListDto): Observable<PageResult<UserListedDto>> {
     const query = transformDtoQuery(userListDto);
-    return this.httpClient.get<UserListedDto>(`${environment.URL_API_BASE}/user${query}`);
+    return this.httpClient.get<PageResult<UserListedDto>>(`${environment.URL_API_BASE}/user${query}`);
   }
 }

@@ -1,37 +1,40 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import {
-  EmailValidator,
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { InputMaskModule } from 'primeng/inputmask';
 import { SidebarModule } from 'primeng/sidebar';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, forkJoin, Observable, Subscription } from 'rxjs';
 import { ServiceListedDto } from '../../service/_dtos/service-listed.dto';
 import { ServiceApiService } from '../../service/_services/service.api.service';
+import { CustomerListDto } from './../../customer/_dtos/customer-list.dto';
+import { UserServiceApi } from './../../user/_services/apis/user.api.service';
+import { SchedulingApiService } from './../_services/scheduling.api.service';
 
-import { MenuItem, MessageService, ScrollerOptions } from 'primeng/api';
-import { Menu, MenuModule } from 'primeng/menu';
-import { ButtonModule } from 'primeng/button';
-import { NewServiceComponent } from '../../new-service/new-service.component';
-import { Dialog, DialogModule } from 'primeng/dialog';
-import { SystemConfigManagerApiService } from '../../../pages/system-config/_services/systemConfigManager.api.service';
 import moment from 'moment';
+import { MenuItem, MessageService, ScrollerOptions } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { Dialog, DialogModule } from 'primeng/dialog';
+import { Menu, MenuModule } from 'primeng/menu';
 import { ToastModule } from 'primeng/toast';
-import { ServiceUpdatedDto } from '../../service/_dtos/service-updated.dto ';
-import { ServiceCreatedDto } from '../../service/_dtos/service-created.dto';
 import { InputNumberFormComponent } from '../../../_shared/_components/forms/input-number-form/input-number-form.component';
 import { InputTextFormComponent } from '../../../_shared/_components/forms/input-text-form/input-text-form.component';
 import { InputTextareaFormComponent } from '../../../_shared/_components/forms/input-textarea-form/input-textarea-form.component';
 import { SelectFormComponent } from '../../../_shared/_components/forms/select-form/select-form.component';
+import { durationValidator } from '../../../_shared/_validators/duration-validator';
+import { CustomerListedDto } from '../../customer/_dtos/customer-listed.dto';
+import { CustomerApiService } from '../../customer/services/customer.api.service';
 import { TimeOption } from '../../new-service/_interfaces/time-stamp.interface';
+import { NewServiceComponent } from '../../new-service/new-service.component';
+import { ServiceCreatedDto } from '../../service/_dtos/service-created.dto';
 import { ServiceListDto } from '../../service/_dtos/service-list.dto';
+import { ServiceUpdatedDto } from '../../service/_dtos/service-updated.dto ';
+import { UserListDto } from '../../user/_dtos/user-list.dto';
+import { UserListedDto } from '../../user/_dtos/user-listed.dto';
+import { SchedulingCreateDto, SchedulingCreateDtoNamespace } from '../_dtos/scheduling-create.dto';
+import { durationHoursMinutes } from '../../../_shared/_helpers/duration-helper';
+import { SchedulingCreatedDto } from '../_dtos/scheduling-created.dto';
+import { handlerErrorBase } from '../../../_shared/_utils/handler-error-base';
 
 @Component({
   selector: 'scheduling-form',
@@ -58,22 +61,34 @@ import { ServiceListDto } from '../../service/_dtos/service-list.dto';
 })
 export class SchedulingFormComponent implements OnInit, OnDestroy {
   @ViewChild('dialog') dialog!: Dialog;
+  @Output() successHandler: EventEmitter<SchedulingCreatedDto> = new EventEmitter();
+  @Input() sidebarVisible$!: Observable<boolean>;
+  sidebarVisible: boolean = false;
 
   private readonly formBuilder = inject(FormBuilder);
+
   readonly serviceApi = inject(ServiceApiService);
+  readonly userApi = inject(UserServiceApi);
+  readonly customerApi = inject(CustomerApiService);
+  readonly schedulingApi = inject(SchedulingApiService);
+
   private messageService: MessageService = inject(MessageService);
 
   loading = false;
   errorMessage: string | null = null;
   modalServiceVisible: boolean = false;
 
-  menuServicesOptions: MenuItem[] | undefined;
-  menuSelectedServicesIndex = 0;
-
   serviceFormMode: 'create' | 'update' = 'create';
 
-  //Populate date
+  protected isEditMode = false;
+
+  //Populate options
   items: ServiceListedDto[] = [];
+  itemsEmployees: UserListedDto[] = [];
+  itemsCustomer: CustomerListedDto[] = [];
+
+  menuServicesOptions: MenuItem[] | undefined;
+  menuSelectedServicesIndex = 0;
 
   //configs
   hours: TimeOption[] = [];
@@ -85,16 +100,28 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
 
   //forms
   protected schedulingForm = this.formBuilder.group({
-    name: ['', [Validators.required]],
-    hours: new FormControl<TimeOption | null>(null, Validators.required),
-    minutes: new FormControl<TimeOption | null>(null, Validators.required),
-    observation: new FormControl('', { validators: [Validators.min(1)] }),
+    duration: this.formBuilder.group(
+      {
+        hours: new FormControl<TimeOption | null>(null, Validators.required),
+        minutes: new FormControl<TimeOption | null>(null, Validators.required),
+      },
+      { validators: [durationValidator()] }
+    ),
+    customer: this.formBuilder.group(
+      {
+        selected: new FormControl<CustomerListedDto | null>(null, Validators.required),
+        phone: new FormControl({ value: '', disabled: true }),
+        email: new FormControl({ value: '', disabled: true }, [Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)]),
+      },
+      { validators: [Validators.required] }
+    ),
+    observation: new FormControl(''),
+    employer: new FormControl<UserListedDto | null>(null, { validators: [Validators.required] }),
     discount: new FormControl(0),
     valueTotal: new FormControl({ value: 0, disabled: true }),
     price: new FormControl(0, { validators: [Validators.min(1)] }),
-    date: new FormControl(new Date(Date.now()), { validators: [Validators.min(1)] }),
-    phone: new FormControl(0, { validators: [Validators.max(16), Validators.min(16)] }),
-    email: new FormControl('', [Validators.required, Validators.pattern(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/)]),
+    date: new FormControl(new Date(), [Validators.required]),
+
     services: this.formBuilder.array<
       FormGroup<{
         service: FormControl<ServiceListedDto | null>;
@@ -102,8 +129,11 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
       }>
     >([
       this.formBuilder.group({
-        service: this.formBuilder.control<ServiceListedDto | null>(null),
-        value: this.formBuilder.control<number | null>({ value: 0, disabled: true }),
+        service: this.formBuilder.control<ServiceListedDto | null>(null, [Validators.required]),
+        value: this.formBuilder.control<number | null>(
+          { value: 0, disabled: true },
+          { validators: [Validators.required, Validators.min(1)] }
+        ),
       }),
     ]),
   });
@@ -126,13 +156,20 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.sub.add(
+      this.sidebarVisible$.subscribe((value) => {
+        this.sidebarVisible = value;
+      })
+    );
+
     this.onChangeServiceSelected();
+    this.onChangeCustomerSelected();
     this.onChangeDiscount();
     this.onChangePrice();
 
     this.initializeServiceMenuOptions();
 
-    this.fetchService();
+    this.fetchApis();
 
     //minutes
     for (let i = 0; i <= 55; i += 5) {
@@ -149,10 +186,51 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
         value: i,
       });
     }
+
+    this.schedulingForm.patchValue({
+      duration: {
+        hours: this.hours[0],
+        minutes: this.minutes[0],
+      },
+    });
   }
 
-  protected isEditMode = false;
-  protected sidebarVisible = true;
+  onSubmit() {
+    this.schedulingForm.markAllAsTouched();
+    this.errorMessage = null;
+
+    const services: SchedulingCreateDtoNamespace.ServiceDto[] = [];
+
+    this.schedulingForm.value.services?.forEach((service) => {
+      services.push({ id: service.service?.id ?? 0 });
+    });
+
+    const hours = this.schedulingForm.value.duration?.hours?.value ?? 0;
+    const minutes = this.schedulingForm.value.duration?.minutes?.value ?? 0;
+
+    if (this.schedulingForm.valid) {
+      const schedulingCreateDto: SchedulingCreateDto = {
+        staffUserId: this.schedulingForm.value.employer?.id ?? 0,
+        customerId: this.schedulingForm.value.customer?.selected?.id ?? 0,
+        date: this.schedulingForm.value.date?.toISOString() ?? '',
+        discount: this.schedulingForm.value.discount ?? 0,
+        services: services,
+        duration: durationHoursMinutes(hours, minutes),
+      };
+
+      this.schedulingApi
+        .create(schedulingCreateDto)
+        .pipe(finalize(() => (this.loading = false)))
+        .subscribe({
+          next: (res) => {
+            this.successHandler.emit(res);
+          },
+          error: (error) => {
+            this.errorMessage = handlerErrorBase(error)?.message ?? 'Ocorreu um erro ao tentar criar';
+          },
+        });
+    }
+  }
 
   onChangeServiceSelected(event?: any) {
     this.schedulingForm.controls.services.controls.forEach((serviceGroup: FormGroup, index: number) => {
@@ -165,6 +243,14 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
         })
       );
     });
+  }
+  onChangeCustomerSelected() {
+    this.sub.add(
+      this.schedulingForm.controls.customer.controls.selected.valueChanges.subscribe((value) => {
+        this.schedulingForm.controls.customer.controls.email.patchValue(value?.email ?? '');
+        this.schedulingForm.controls.customer.controls.phone.patchValue(value?.phone ?? '');
+      })
+    );
   }
 
   onChangePrice() {
@@ -248,7 +334,7 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
   }
 
   handlerSuccessService(response: ServiceUpdatedDto | ServiceCreatedDto) {
-    this.fetchService();
+    this.fetchApis();
     this.modalServiceVisible = false;
 
     this.messageService.add({
@@ -273,7 +359,7 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
     this.updateDuration();
   }
 
-  private fetchService() {
+  private fetchApis() {
     this.loading = true;
 
     const serviceListDto: ServiceListDto = {
@@ -282,18 +368,35 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
       },
     };
 
-    this.serviceApi
-      .getAll(serviceListDto)
+    const userListDto: UserListDto = {
+      paginationProperties: {
+        allRows: true,
+      },
+    };
+
+    const customerListDto: CustomerListDto = {
+      paginationProperties: {
+        allRows: true,
+      },
+    };
+
+    forkJoin([
+      this.serviceApi.getAll(serviceListDto),
+      this.userApi.getAll(userListDto),
+      this.customerApi.getAll(customerListDto),
+    ])
       .pipe(finalize(() => (this.loading = false)))
-      .subscribe((res) => {
-        this.items = res.items;
+      .subscribe(([serviceRes, userRes, customerRes]) => {
+        this.items = serviceRes.items;
+        this.itemsEmployees = userRes.items;
+        this.itemsCustomer = customerRes.items;
 
         const isFirstControlNull = this.schedulingForm.controls.services.controls[0].value.service == null;
 
         if (isFirstControlNull) {
           this.schedulingForm.controls.services.controls[0].patchValue({
-            service: res.items[0],
-            value: res.items[0].price,
+            service: serviceRes.items[0],
+            value: serviceRes.items[0].price,
           });
         }
 
@@ -385,8 +488,10 @@ export class SchedulingFormComponent implements OnInit, OnDestroy {
     const discount = this.schedulingForm.controls.discount.value ?? 0;
 
     this.schedulingForm.patchValue({
-      hours: this.hours.find((hours) => hours.value == maxDuration.asHours()) ?? this.hours[0],
-      minutes: this.minutes.find((minutes) => minutes.value == maxDuration.asHours()) ?? this.minutes[0],
+      duration: {
+        hours: this.hours.find((hours) => hours.value == maxDuration.asHours()) ?? this.hours[0],
+        minutes: this.minutes.find((minutes) => minutes.value == maxDuration.asHours()) ?? this.minutes[0],
+      },
       price: totalValue,
       valueTotal: totalValue - discount >= 0 ? totalValue - discount : 0,
     });

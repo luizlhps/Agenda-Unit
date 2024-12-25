@@ -1,12 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AuthenticationService } from '../../auth/_services/authentication.service';
-import { CalendarModule } from 'primeng/calendar';
+import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 import { CalendarComponent } from '@schedule-x/angular';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
-import { StyleClassModule } from 'primeng/styleclass';
-import { AvatarModule } from 'primeng/avatar';
-import { MenuItem } from 'primeng/api';
-import { MenuModule } from 'primeng/menu';
 import {
   createCalendar,
   createViewDay,
@@ -14,22 +9,23 @@ import {
   createViewMonthGrid,
   createViewWeek,
 } from '@schedule-x/calendar';
-import '@schedule-x/theme-default/dist/index.css';
 import { createEventModalPlugin } from '@schedule-x/event-modal';
-import { ButtonModule } from 'primeng/button';
-import { RippleModule } from 'primeng/ripple';
-import { LogoSvgComponent } from '../../_shared/_components/logo/logo.component';
-import { CommonModule } from '@angular/common';
-import { TabViewModule } from 'primeng/tabview';
-import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
-import { SchedulingApiService } from '../../_features/scheduling/_services/scheduling.api.service';
-import { SchedulingListDto } from '../../_features/scheduling/_dtos/scheduling-list.dto';
-import moment from 'moment';
 import { createEventsServicePlugin } from '@schedule-x/events-service';
-import { finalize, Subscription } from 'rxjs';
+import moment from 'moment';
+import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ICalendarEvent } from './_interfaces/calendar-event.interface';
+import { RippleModule } from 'primeng/ripple';
+import { Sidebar } from 'primeng/sidebar';
+import { StyleClassModule } from 'primeng/styleclass';
+import { TabViewModule } from 'primeng/tabview';
+import { BehaviorSubject, finalize, Subscription } from 'rxjs';
+import { SchedulingListDto } from '../../_features/scheduling/_dtos/scheduling-list.dto';
+import { SchedulingApiService } from '../../_features/scheduling/_services/scheduling.api.service';
 import { SchedulingFormComponent } from '../../_features/scheduling/scheduling-form/scheduling-form.component';
+import { ICalendarEvent } from './_interfaces/calendar-event.interface';
+import { SchedulingCreatedDto } from '../../_features/scheduling/_dtos/scheduling-created.dto';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-scheduling',
@@ -42,15 +38,13 @@ import { SchedulingFormComponent } from '../../_features/scheduling/scheduling-f
     StyleClassModule,
     CommonModule,
     TabViewModule,
-    RouterLinkActive,
-    RouterLink,
     RouterModule,
     ProgressSpinnerModule,
     SchedulingFormComponent,
   ],
   templateUrl: './scheduling.component.html',
   styleUrl: './scheduling.component.scss',
-  providers: [SchedulingApiService],
+  providers: [SchedulingApiService, MessageService],
 })
 export class ScheduleComponent implements OnInit, OnDestroy {
   private sub = new Subscription();
@@ -58,28 +52,42 @@ export class ScheduleComponent implements OnInit, OnDestroy {
   protected endDateCurrent = moment().endOf('month').format('YYYY-MM-DD');
   protected loadingScheduling = false;
 
+  private messageService: MessageService = inject(MessageService);
   private schedulingApi = inject(SchedulingApiService);
 
   @ViewChild('schedule') schedule!: any;
   @ViewChild('sidebarRef') sidebarRef!: Sidebar;
 
-  sidebarVisible: boolean = true;
+  private sidebarVisibleSubject = new BehaviorSubject<boolean>(false);
+  public sidebarVisible$ = this.sidebarVisibleSubject.asObservable();
+
   title = 'angular-example';
   calendarApp = createCalendar({
     isResponsive: true,
     locale: 'pt-BR',
-    events: [],
+    events: [
+      {
+        start: '2024-12-01',
+        end: '2024-12-02',
+        people: ['Person 1', 'Person 2'],
+        description: 'Description 1',
+        id: 1,
+      },
+    ],
     callbacks: {
-      onEventClick(calendarEvent: any) {
+      onEventClick: (calendarEvent: any) => {
         console.log('onEventClick', calendarEvent);
+        this.toggleSidebarVisibility(true);
       },
 
-      onClickDate(date) {
+      onClickDate: (date) => {
         console.log('onClickDate', date); // e.g. 2024-01-01
+        this.toggleSidebarVisibility(true);
       },
 
-      onClickDateTime(dateTime) {
+      onClickDateTime: (dateTime) => {
         console.log('onClickDateTime', dateTime); // e.g. 2024-01-01 12:37
+        this.toggleSidebarVisibility(true);
       },
 
       onClickAgendaDate(date) {
@@ -115,6 +123,22 @@ export class ScheduleComponent implements OnInit, OnDestroy {
     this.sidebarRef.close(e);
   }
 
+  handlerSuccessService(response: SchedulingCreatedDto) {
+    this.fetchShedulingCurrent();
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Sucesso!',
+      detail: 'O Agendamento foi criado!',
+    });
+
+    this.toggleSidebarVisibility(false);
+  }
+
+  toggleSidebarVisibility(visible: boolean) {
+    this.sidebarVisibleSubject.next(visible);
+  }
+
   fetchShedulingCurrent(date?: string) {
     this.loadingScheduling = true;
 
@@ -148,16 +172,22 @@ export class ScheduleComponent implements OnInit, OnDestroy {
               const hasMoreThanOneService =
                 item.schedulingServices.length > 1 ? item.schedulingServices.length - 1 + '+' : '';
 
+              const dateLocal = moment(item.date).local();
+
+              console.log(dateLocal);
+
               items.push({
                 id: item.id,
                 title: item.schedulingServices[0].name + ' ' + hasMoreThanOneService,
                 description: item.notes ?? '',
-                start: moment(item.date).format('YYYY-MM-DD HH:mm'),
-                end: moment(item.date).add(duration).format('YYYY-MM-DD HH:mm'),
+                start: moment(dateLocal).format('YYYY-MM-DD HH:mm'),
+                end: moment(dateLocal).add(duration).format('YYYY-MM-DD HH:mm'),
               });
-            });
 
-            this.calendarApp.events.set(items);
+              this.calendarApp.events.set(items);
+
+              console.log(this.calendarApp);
+            });
           }
         })
     );
